@@ -193,9 +193,12 @@ public:
 	CNetObj_PlayerInput m_Input;
 
 	int m_TriggeredEvents;
+        
+	bool readyForBot;
 
 	void Init(CWorldCore *pWorld, CCollision *pCollision);
 	void Reset();
+        bool IsGrounded();
 	void Tick(bool UseInput);
 	void Move();
 

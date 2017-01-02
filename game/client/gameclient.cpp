@@ -21,6 +21,7 @@
 #include "render.h"
 
 #include "gameclient.h"
+#include "WasdBot.h"
 
 #include "components/binds.h"
 #include "components/broadcast.h"
@@ -49,6 +50,8 @@
 #include "components/sounds.h"
 #include "components/spectator.h"
 #include "components/voting.h"
+
+#include <stdio.h>
 
 CGameClient g_GameClient;
 
@@ -270,6 +273,8 @@ void CGameClient::OnInit()
 	Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "gameclient", aBuf);
 
 	m_ServerMode = SERVERMODE_PURE;
+	
+	wasdBot = new WasdBot();
 }
 
 void CGameClient::DispatchInput()
@@ -308,7 +313,8 @@ void CGameClient::DispatchInput()
 
 int CGameClient::OnSnapInput(int *pData)
 {
-	return m_pControls->SnapInput(pData);
+	wasdBot->player = &m_PredictedChar;
+	return m_pControls->SnapInput(pData, wasdBot);
 }
 
 void CGameClient::OnConnected()

@@ -59,6 +59,8 @@ void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision)
 {
 	m_pWorld = pWorld;
 	m_pCollision = pCollision;
+	
+	readyForBot = true;
 }
 
 void CCharacterCore::Reset()
@@ -74,17 +76,23 @@ void CCharacterCore::Reset()
 	m_TriggeredEvents = 0;
 }
 
+bool CCharacterCore::IsGrounded()
+{
+	float PhysSize = 28.0f; //ugly to copy constant from bellow...
+	if(m_pCollision->CheckPoint(m_Pos.x+PhysSize/2, m_Pos.y+PhysSize/2+5))
+		return true;
+	if(m_pCollision->CheckPoint(m_Pos.x-PhysSize/2, m_Pos.y+PhysSize/2+5))
+		return true;
+	return false;
+}
+
 void CCharacterCore::Tick(bool UseInput)
 {
 	float PhysSize = 28.0f;
 	m_TriggeredEvents = 0;
 
 	// get ground state
-	bool Grounded = false;
-	if(m_pCollision->CheckPoint(m_Pos.x+PhysSize/2, m_Pos.y+PhysSize/2+5))
-		Grounded = true;
-	if(m_pCollision->CheckPoint(m_Pos.x-PhysSize/2, m_Pos.y+PhysSize/2+5))
-		Grounded = true;
+	bool Grounded = IsGrounded();
 
 	vec2 TargetDirection = normalize(vec2(m_Input.m_TargetX, m_Input.m_TargetY));
 

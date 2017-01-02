@@ -6,6 +6,7 @@
 
 #include <game/collision.h>
 #include <game/client/gameclient.h>
+#include <game/client/WasdBot.h>
 #include <game/client/component.h>
 #include <game/client/components/chat.h>
 #include <game/client/components/menus.h>
@@ -106,7 +107,7 @@ void CControls::OnMessage(int Msg, void *pRawMsg)
 	}
 }
 
-int CControls::SnapInput(int *pData)
+int CControls::SnapInput(int *pData, WasdBot *wasdBot)
 {
 	static int64 LastSendTime = 0;
 	bool Send = false;
@@ -140,7 +141,7 @@ int CControls::SnapInput(int *pData)
 	}
 	else
 	{
-
+		wasdBot->injectInput(this);
 		m_InputData.m_TargetX = (int)m_MousePos.x;
 		m_InputData.m_TargetY = (int)m_MousePos.y;
 		if(!m_InputData.m_TargetX && !m_InputData.m_TargetY)
@@ -170,7 +171,7 @@ int CControls::SnapInput(int *pData)
 			m_InputData.m_TargetX = (int)(sinf(t*3)*100.0f);
 			m_InputData.m_TargetY = (int)(cosf(t*3)*100.0f);
 		}
-
+		
 		// check if we need to send input
 		if(m_InputData.m_Direction != m_LastData.m_Direction) Send = true;
 		else if(m_InputData.m_Jump != m_LastData.m_Jump) Send = true;

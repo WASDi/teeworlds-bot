@@ -5,6 +5,8 @@
 #include <base/vmath.h>
 #include <game/client/component.h>
 
+#include <game/client/WasdBot.h>
+
 class CControls : public CComponent
 {
 public:
@@ -26,7 +28,7 @@ public:
 	virtual void OnConsoleInit();
 	virtual void OnPlayerDeath();
 
-	int SnapInput(int *pData);
+	int SnapInput(int *pData, WasdBot *wasdBot);
 	void ClampMousePos();
 };
 #endif

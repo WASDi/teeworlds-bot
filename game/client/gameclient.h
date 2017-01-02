@@ -235,6 +235,7 @@ public:
 	class CDamageInd *m_pDamageind;
 	class CCamera *m_pCamera;
 	class CControls *m_pControls;
+	class WasdBot *wasdBot;
 	class CEffects *m_pEffects;
 	class CSounds *m_pSounds;
 	class CMotd *m_pMotd;
