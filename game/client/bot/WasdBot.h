@@ -1,5 +1,5 @@
 #include <game/gamecore.h>
-#include "components/controls.h"
+#include "../components/controls.h"
 
 #ifndef WASDBOT_H
 #define WASDBOT_H

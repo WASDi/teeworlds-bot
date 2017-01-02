@@ -1,5 +1,5 @@
 #include "WasdBot.h"
-#include "components/controls.h"
+#include "../components/controls.h"
 #include <stdio.h>
 
 WasdBot::WasdBot() {

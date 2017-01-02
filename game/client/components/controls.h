@@ -5,7 +5,7 @@
 #include <base/vmath.h>
 #include <game/client/component.h>
 
-#include <game/client/WasdBot.h>
+#include <game/client/bot/WasdBot.h>
 
 class CControls : public CComponent
 {

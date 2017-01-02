@@ -21,7 +21,7 @@
 #include "render.h"
 
 #include "gameclient.h"
-#include "WasdBot.h"
+#include "bot/WasdBot.h"
 
 #include "components/binds.h"
 #include "components/broadcast.h"
@@ -50,8 +50,6 @@
 #include "components/sounds.h"
 #include "components/spectator.h"
 #include "components/voting.h"
-
-#include <stdio.h>
 
 CGameClient g_GameClient;
 

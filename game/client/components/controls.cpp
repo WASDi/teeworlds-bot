@@ -6,7 +6,7 @@
 
 #include <game/collision.h>
 #include <game/client/gameclient.h>
-#include <game/client/WasdBot.h>
+#include <game/client/bot/WasdBot.h>
 #include <game/client/component.h>
 #include <game/client/components/chat.h>
 #include <game/client/components/menus.h>
