@@ -1,11 +1,11 @@
 #include "WasdBot.h"
-#include <game/client/components/controls.h>
 #include "strategies/JumpWhenFallingStrategy.h"
-
-#include <stdio.h>
+#include "strategies/StickToXPositionStrategy.h"
+#include <game/client/components/controls.h>
 
 WasdBot::WasdBot() {
-	botStrategy = new JumpWhenFallingStrategy();
+	//botStrategy = new JumpWhenFallingStrategy();
+	botStrategy = new StickToXPositionStrategy(1000);
 }
 
 void WasdBot::injectInput(CControls *controls) {
