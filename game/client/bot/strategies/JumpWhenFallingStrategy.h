@@ -1,7 +1,7 @@
-#include "BotStrategy.h"
-
 #ifndef JUMPWHENFALLINGSTRATEGY_H
 #define JUMPWHENFALLINGSTRATEGY_H
+
+#include "BotStrategy.h"
 
 class JumpWhenFallingStrategy : public BotStrategy {
 public:
@@ -14,4 +14,3 @@ private:
 };
 
 #endif /* JUMPWHENFALLINGSTRATEGY_H */
-
