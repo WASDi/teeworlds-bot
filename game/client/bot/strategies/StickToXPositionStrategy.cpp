@@ -1,7 +1,6 @@
 #include "StickToXPositionStrategy.h"
 
-StickToXPositionStrategy::StickToXPositionStrategy(float targetX) {
-	this->targetX = targetX;
+StickToXPositionStrategy::StickToXPositionStrategy(float targetX) : targetX(targetX) {
 }
 
 void StickToXPositionStrategy::execute(CCharacterCore *player, CControls *controls) {

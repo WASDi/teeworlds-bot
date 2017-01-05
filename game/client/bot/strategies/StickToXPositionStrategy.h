@@ -9,7 +9,7 @@ public:
     void execute(CCharacterCore *player, CControls *controls);
 
 private:
-    int targetX;
+    const int targetX;
 
 };
 
