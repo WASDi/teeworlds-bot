@@ -215,8 +215,21 @@ void CGameClient::OnConsoleInit()
 	Console()->Chain("player_color_feet", ConchainSpecialInfoupdate, this);
 	Console()->Chain("player_skin", ConchainSpecialInfoupdate, this);
 
+	Console()->Register("bot_toggle", "", CFGFLAG_CLIENT, ConBotToggle, this, "Bot on/off");
+	Console()->Register("bot_dbg_toggle", "", CFGFLAG_CLIENT, ConBotDbgToggle, this, "Bot debug on/off");
+
 	//
 	m_SuppressEvents = false;
+}
+
+void CGameClient::ConBotToggle(IConsole::IResult *pResult, void *pUserData)
+{
+	((CGameClient*)pUserData)->wasdBot->toggleEnabled();
+}
+
+void CGameClient::ConBotDbgToggle(IConsole::IResult *pResult, void *pUserData)
+{
+	((CGameClient*)pUserData)->wasdBot->toggleDebug();
 }
 
 void CGameClient::OnInit()

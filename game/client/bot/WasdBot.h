@@ -10,15 +10,20 @@ public:
 
     WasdBot();
 
-    void injectInput(CControls *controls);
+	void injectInput(CControls *controls);
 
-    class CCharacterCore *player;
+	void toggleEnabled();
+	void toggleDebug();
+
+	class CCharacterCore *player;
 
 private:
 
-    bool jumpedLastStep;
+	bool jumpedLastStep;
+	bool enabled;
+	bool debug;
 
-    class BotStrategy *botStrategy;
+	class BotStrategy *botStrategy;
 
 };
 
