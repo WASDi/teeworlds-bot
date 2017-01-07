@@ -5,11 +5,16 @@
 
 class StickToXPositionStrategy : public BotStrategy {
 public:
-    StickToXPositionStrategy(float targetX);
-    void execute(CCharacterCore *player, CControls *controls);
+
+	StickToXPositionStrategy(CGameClient* client, float targetX);
+
+	void execute(CControls *controls);
 
 private:
-    const int targetX;
+	
+	CGameClient* client;
+
+	const int targetX;
 
 };
 

@@ -1,14 +1,15 @@
 #include "WasdBot.h"
 #include "strategies/JumpWhenFallingStrategy.h"
-#include "strategies/StickToXPositionStrategy.h"
+//#include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
 #include <stdio.h>
 
-WasdBot::WasdBot() : jumpedLastStep(false), enabled(false), debug(false) {
-	botStrategies.push_back(new JumpWhenFallingStrategy());
-	botStrategies.push_back(new StickToXPositionStrategy(1000));
+WasdBot::WasdBot(CGameClient* client) : client(client), jumpedLastStep(false), enabled(false), debug(false) {
+	botStrategies.push_back(new JumpWhenFallingStrategy(client));
+	//botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 1000));
 }
 
 void WasdBot::injectInput(CControls *controls) {
+	CCharacterCore* player = &client->m_PredictedChar;
 	if (!player->readyForBot) {
 		return;
 	}
@@ -19,10 +20,11 @@ void WasdBot::injectInput(CControls *controls) {
 				player->m_Pos.y,
 				player->m_Vel.y);
 	}
+	
 	if (enabled) {
-		for(std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {
+		for (std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {
 			BotStrategy* botStrategy = (*it);
-			botStrategy->execute(player, controls);
+			botStrategy->execute(controls);
 		}
 	}
 }

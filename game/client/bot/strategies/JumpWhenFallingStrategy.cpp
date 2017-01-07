@@ -1,6 +1,10 @@
 #include "JumpWhenFallingStrategy.h"
 
-void JumpWhenFallingStrategy::execute(CCharacterCore *player, CControls *controls) {
+JumpWhenFallingStrategy::JumpWhenFallingStrategy(CGameClient* client) : client(client) {
+}
+
+void JumpWhenFallingStrategy::execute(CControls *controls) {
+	CCharacterCore* player = &client->m_PredictedChar;
 	if (jumpedLastStep) {
 		controls->m_InputData.m_Jump = 0;
 		jumpedLastStep = false;

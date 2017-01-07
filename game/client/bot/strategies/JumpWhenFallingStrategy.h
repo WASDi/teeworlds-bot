@@ -6,10 +6,15 @@
 class JumpWhenFallingStrategy : public BotStrategy {
 public:
 
-    void execute(CCharacterCore *player, CControls *controls);
+	JumpWhenFallingStrategy(CGameClient* client);
+
+	void execute(CControls *controls);
 
 private:
-    bool jumpedLastStep;
+
+	CGameClient* client;
+
+	bool jumpedLastStep;
 
 };
 

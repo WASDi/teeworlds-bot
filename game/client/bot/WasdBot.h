@@ -2,24 +2,23 @@
 #define WASDBOT_H
 
 #include <game/gamecore.h>
-#include <game/client/components/controls.h>
 #include "strategies/BotStrategy.h"
 #include <list>
 
 class WasdBot {
 public:
 
-	WasdBot();
+	WasdBot(CGameClient* gameClient);
 
-	void injectInput(CControls *controls);
+	void injectInput(CControls* controls);
 
 	bool toggleEnabled();
 	bool toggleDebug();
 
-	class CCharacterCore *player;
-
 private:
 
+	CGameClient* client;
+	
 	bool jumpedLastStep;
 	bool enabled;
 	bool debug;

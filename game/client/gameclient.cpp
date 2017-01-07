@@ -291,7 +291,7 @@ void CGameClient::OnInit()
 
 	m_ServerMode = SERVERMODE_PURE;
 	
-	wasdBot = new WasdBot();
+	wasdBot = new WasdBot(this);
 }
 
 void CGameClient::DispatchInput()
@@ -330,7 +330,6 @@ void CGameClient::DispatchInput()
 
 int CGameClient::OnSnapInput(int *pData)
 {
-	wasdBot->player = &m_PredictedChar;
 	return m_pControls->SnapInput(pData, wasdBot);
 }
 

@@ -7,7 +7,7 @@
 class BotStrategy {
 public:
 
-    virtual void execute(CCharacterCore *player, CControls *controls) = 0;
+	virtual void execute(CControls *controls) = 0;
 
 };
 
