@@ -12,8 +12,8 @@ public:
 
 	void injectInput(CControls *controls);
 
-	void toggleEnabled();
-	void toggleDebug();
+	bool toggleEnabled();
+	bool toggleDebug();
 
 	class CCharacterCore *player;
 

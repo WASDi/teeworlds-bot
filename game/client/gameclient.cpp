@@ -224,12 +224,18 @@ void CGameClient::OnConsoleInit()
 
 void CGameClient::ConBotToggle(IConsole::IResult *pResult, void *pUserData)
 {
-	((CGameClient*)pUserData)->wasdBot->toggleEnabled();
+	CGameClient *client = (CGameClient*)pUserData;
+	
+	bool enabled = client->wasdBot->toggleEnabled();
+	client->m_pChat->AddLine(-1, -2, enabled ? "Bot ENABLED" : "Bot DISABLE"); //-2 = CGameContext::CHAT_ALL
 }
 
 void CGameClient::ConBotDbgToggle(IConsole::IResult *pResult, void *pUserData)
 {
-	((CGameClient*)pUserData)->wasdBot->toggleDebug();
+	CGameClient *client = (CGameClient*)pUserData;
+	
+	bool debug = client->wasdBot->toggleDebug();
+	client->m_pChat->AddLine(-1, -2, debug ? "BotDebug ENABLED" : "BotDebug DISABLE"); //-2 = CGameContext::CHAT_ALL
 }
 
 void CGameClient::OnInit()

@@ -4,7 +4,7 @@ StickToXPositionStrategy::StickToXPositionStrategy(float targetX) : targetX(targ
 }
 
 void StickToXPositionStrategy::execute(CCharacterCore *player, CControls *controls) {
-	const float sensitivity = 3;
+	const float sensitivity = 4;
 	const float veloFactor = 2;
 
 	float delta = player->m_Pos.x - this->targetX;

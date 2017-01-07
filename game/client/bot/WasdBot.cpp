@@ -25,10 +25,14 @@ void WasdBot::injectInput(CControls *controls) {
 	}
 }
 
-void WasdBot::toggleEnabled() {
+bool WasdBot::toggleEnabled() {
 	enabled = !enabled;
+	if (!enabled) {
+		//TODO reset controls
+	}
+	return enabled;
 }
 
-void WasdBot::toggleDebug() {
-	debug = !debug;
+bool WasdBot::toggleDebug() {
+	return debug = !debug;
 }
