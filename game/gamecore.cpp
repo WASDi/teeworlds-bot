@@ -59,8 +59,6 @@ void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision)
 {
 	m_pWorld = pWorld;
 	m_pCollision = pCollision;
-	
-	readyForBot = true;
 }
 
 void CCharacterCore::Reset()

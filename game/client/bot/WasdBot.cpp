@@ -3,14 +3,18 @@
 //#include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
 #include <stdio.h>
 
-WasdBot::WasdBot(CGameClient* client) : client(client), jumpedLastStep(false), enabled(false), debug(false) {
+WasdBot::WasdBot(CGameClient* client) :
+client(client),
+jumpedLastStep(false),
+enabled(true),
+debug(false) {
 	botStrategies.push_back(new JumpWhenFallingStrategy(client));
 	//botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 1000));
 }
 
 void WasdBot::injectInput(CControls *controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
-	if (!player->readyForBot) {
+	if (!client->m_Snap.m_pLocalCharacter) {
 		return;
 	}
 	if (debug) {
@@ -20,7 +24,7 @@ void WasdBot::injectInput(CControls *controls) {
 				player->m_Pos.y,
 				player->m_Vel.y);
 	}
-	
+
 	if (enabled) {
 		for (std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {
 			BotStrategy* botStrategy = (*it);
