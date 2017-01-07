@@ -1,12 +1,11 @@
 #include "WasdBot.h"
 #include "strategies/JumpWhenFallingStrategy.h"
 #include "strategies/StickToXPositionStrategy.h"
-#include <game/client/components/controls.h>
 #include <stdio.h>
 
 WasdBot::WasdBot() : jumpedLastStep(false), enabled(false), debug(false) {
-	//botStrategy = new JumpWhenFallingStrategy();
-	botStrategy = new StickToXPositionStrategy(1000);
+	botStrategies.push_back(new JumpWhenFallingStrategy());
+	botStrategies.push_back(new StickToXPositionStrategy(1000));
 }
 
 void WasdBot::injectInput(CControls *controls) {
@@ -21,7 +20,10 @@ void WasdBot::injectInput(CControls *controls) {
 				player->m_Vel.y);
 	}
 	if (enabled) {
-		botStrategy->execute(player, controls);
+		for(std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {
+			BotStrategy* botStrategy = (*it);
+			botStrategy->execute(player, controls);
+		}
 	}
 }
 

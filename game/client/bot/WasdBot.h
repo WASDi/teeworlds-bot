@@ -4,11 +4,12 @@
 #include <game/gamecore.h>
 #include <game/client/components/controls.h>
 #include "strategies/BotStrategy.h"
+#include <list>
 
 class WasdBot {
 public:
 
-    WasdBot();
+	WasdBot();
 
 	void injectInput(CControls *controls);
 
@@ -22,8 +23,8 @@ private:
 	bool jumpedLastStep;
 	bool enabled;
 	bool debug;
-
-	class BotStrategy *botStrategy;
+	
+	std::list<class BotStrategy*> botStrategies;
 
 };
 
