@@ -10,6 +10,7 @@ enabled(false),
 debug(false) {
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
 	botStrategies.push_back(new MoveToChamberStrategy(client));
+	//botStrategies.push_back(new AutoKillWhenNoBotInputRecievedForTooLongStrategy(client, 30000)); //TODO, in case of failure. LOG POSITION
 }
 
 void WasdBot::injectInput(CControls *controls) {
