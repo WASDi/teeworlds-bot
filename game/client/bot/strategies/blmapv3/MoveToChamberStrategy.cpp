@@ -1,6 +1,6 @@
 #include "MoveToChamberStrategy.h"
 
-MoveToChamberStrategy::MoveToChamberStrategy(CGameClient* client) : client(client), lastStage(0) {
+MoveToChamberStrategy::MoveToChamberStrategy(CGameClient* client) : BotStrategy(client), lastStage(0) {
 }
 
 void MoveToChamberStrategy::execute(CControls *controls) {
@@ -28,8 +28,7 @@ int MoveToChamberStrategy::resolveStage() {
 }
 
 void MoveToChamberStrategy::move(CControls *controls, int directon) {
-	if (client->m_Snap.m_pLocalCharacter->m_Weapon == WEAPON_NINJA) {
-		//TODO make above into method "isFrozen" in superclass
+	if (isFrozen()) {
 		controls->m_InputDirectionLeft = 0;
 		controls->m_InputDirectionRight = 0;
 	} else if (directon == MOVE_LEFT) {

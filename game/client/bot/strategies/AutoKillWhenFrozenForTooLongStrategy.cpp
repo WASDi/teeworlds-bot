@@ -1,7 +1,7 @@
 #include "AutoKillWhenFrozenForTooLongStrategy.h"
 
 AutoKillWhenFrozenForTooLongStrategy::AutoKillWhenFrozenForTooLongStrategy(CGameClient* client, long maxTimeMillis) :
-client(client),
+BotStrategy(client),
 maxTimeMillis(maxTimeMillis),
 freezeStartTime(0) {
 }
@@ -21,8 +21,4 @@ void AutoKillWhenFrozenForTooLongStrategy::execute(CControls *controls) {
 	} else {
 		freezeStartTime = 0;
 	}
-}
-
-bool AutoKillWhenFrozenForTooLongStrategy::isFrozen() {
-	return client->m_Snap.m_pLocalCharacter->m_Weapon == WEAPON_NINJA;
 }

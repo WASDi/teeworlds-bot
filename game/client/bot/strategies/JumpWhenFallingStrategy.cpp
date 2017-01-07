@@ -1,6 +1,6 @@
 #include "JumpWhenFallingStrategy.h"
 
-JumpWhenFallingStrategy::JumpWhenFallingStrategy(CGameClient* client) : client(client) {
+JumpWhenFallingStrategy::JumpWhenFallingStrategy(CGameClient* client) : BotStrategy(client) {
 }
 
 void JumpWhenFallingStrategy::execute(CControls *controls) {

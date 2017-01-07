@@ -1,6 +1,6 @@
 #include "StickToXPositionStrategy.h"
 
-StickToXPositionStrategy::StickToXPositionStrategy(CGameClient* client, float targetX) : client(client), targetX(targetX) {
+StickToXPositionStrategy::StickToXPositionStrategy(CGameClient* client, float targetX) : BotStrategy(client), targetX(targetX) {
 }
 
 void StickToXPositionStrategy::execute(CControls *controls) {

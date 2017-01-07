@@ -8,11 +8,9 @@ public:
 
 	JumpWhenFallingStrategy(CGameClient* client);
 
-	void execute(CControls *controls);
+	void execute(CControls* controls);
 
 private:
-
-	CGameClient* client;
 
 	bool jumpedLastStep;
 

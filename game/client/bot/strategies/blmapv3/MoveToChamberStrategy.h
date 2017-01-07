@@ -12,11 +12,9 @@ public:
 
 	MoveToChamberStrategy(CGameClient* client);
 
-	void execute(CControls *controls);
+	void execute(CControls* controls);
 
 private:
-
-	CGameClient* client;
 
 	int lastStage;
 

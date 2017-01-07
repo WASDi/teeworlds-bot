@@ -8,11 +8,9 @@ public:
 
 	StickToXPositionStrategy(CGameClient* client, float targetX);
 
-	void execute(CControls *controls);
+	void execute(CControls* controls);
 
 private:
-	
-	CGameClient* client;
 
 	const int targetX;
 
