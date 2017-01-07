@@ -1,15 +1,15 @@
 #include "WasdBot.h"
-#include "strategies/JumpWhenFallingStrategy.h"
 #include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
+#include "strategies/blmapv3/MoveToChamberStrategy.h"
 #include <stdio.h>
 
 WasdBot::WasdBot(CGameClient* client) :
 client(client),
 jumpedLastStep(false),
-enabled(true),
+enabled(false),
 debug(false) {
-	botStrategies.push_back(new JumpWhenFallingStrategy(client));
-	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 5000));
+	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
+	botStrategies.push_back(new MoveToChamberStrategy(client));
 }
 
 void WasdBot::injectInput(CControls *controls) {

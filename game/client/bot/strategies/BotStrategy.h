@@ -7,7 +7,9 @@
 class BotStrategy {
 public:
 
-	virtual void execute(CControls *controls) = 0;
+	virtual void execute(CControls* controls) = 0;
+	
+	void resetInput(CControls* controls);
 
 };
 
