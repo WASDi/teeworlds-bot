@@ -1,6 +1,6 @@
 #include "WasdBot.h"
 #include "strategies/JumpWhenFallingStrategy.h"
-//#include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
+#include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
 #include <stdio.h>
 
 WasdBot::WasdBot(CGameClient* client) :
@@ -9,7 +9,7 @@ jumpedLastStep(false),
 enabled(true),
 debug(false) {
 	botStrategies.push_back(new JumpWhenFallingStrategy(client));
-	//botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 1000));
+	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 5000));
 }
 
 void WasdBot::injectInput(CControls *controls) {
