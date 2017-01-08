@@ -48,7 +48,9 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 			move(controls, MOVE_LEFT);
 		}
 	} else {
-		controls->m_InputData.m_Hook = 0;
+		if(player->m_HookState == HOOK_RETRACTED) {
+			controls->m_InputData.m_Hook = 0;
+		}
 		int targetX = inTheMiddleY ? 3575 : 3550;
 		float delta = pos.x - targetX;
 		if (delta < -5) {
