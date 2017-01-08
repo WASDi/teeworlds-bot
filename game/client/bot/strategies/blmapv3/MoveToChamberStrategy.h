@@ -24,6 +24,9 @@ private:
 
 	int resolveStage();
 
+	void goFromFightingAreaToUpperArea(CControls* controls);
+	void moveThroughUpperArea(CControls* controls);
+
 	void move(CControls* controls, int direction);
 	int shouldJump(const int* posXJumps, const int length);
 
@@ -31,7 +34,8 @@ private:
 
 enum {
 	MOVE_LEFT,
-	MOVE_RIGHT
+	MOVE_RIGHT,
+	DONT_MOVE
 };
 
 #endif /* MOVETOCHAMBERSTRATEGY_H */

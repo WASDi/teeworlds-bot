@@ -8,9 +8,12 @@ client(client),
 jumpedLastStep(false),
 enabled(false),
 debug(false) {
+	//botStrategies.push_back(new HumanLikeMouseMovementStrategy(client)); //TODO, do first as others may override
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
 	botStrategies.push_back(new MoveToChamberStrategy(client));
+	//botStrategies.push_back(new DoubleJumpIfAboveFreezeAreaStrategy(client)); // might be good, run later to override other jump behaviour
 	//botStrategies.push_back(new AutoKillWhenNoBotInputRecievedForTooLongStrategy(client, 30000)); //TODO, in case of failure. LOG POSITION
+	
 }
 
 void WasdBot::injectInput(CControls *controls) {
@@ -19,7 +22,7 @@ void WasdBot::injectInput(CControls *controls) {
 		return;
 	}
 	if (debug) {
-		printf("%7.2f %+6.2f : %7.2f %+6.2f\n",
+		printf("Pos+Vel : %7.2f %+6.2f : %7.2f %+6.2f\n",
 				player->m_Pos.x,
 				player->m_Vel.x,
 				player->m_Pos.y,
