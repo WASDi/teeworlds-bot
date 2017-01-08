@@ -46,7 +46,7 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 		}
 	} else {
 		controls->m_InputData.m_Hook = 0;
-		int targetX = inTheMiddleY ? 3577 : 3555;
+		int targetX = inTheMiddleY ? 3575 : 3550;
 		float delta = pos.x - targetX;
 		if (delta < -5) {
 			move(controls, MOVE_RIGHT);

@@ -22,6 +22,7 @@ private:
 	bool jumpedLastStep;
 	bool enabled;
 	bool debug;
+	bool resetControlsNextFrame;
 	
 	std::list<class BotStrategy*> botStrategies;
 

@@ -7,13 +7,14 @@ WasdBot::WasdBot(CGameClient* client) :
 client(client),
 jumpedLastStep(false),
 enabled(false),
-debug(false) {
+debug(false),
+resetControlsNextFrame(false) {
 	//botStrategies.push_back(new HumanLikeMouseMovementStrategy(client)); //TODO, do first as others may override
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
 	botStrategies.push_back(new MoveToChamberStrategy(client));
 	//botStrategies.push_back(new DoubleJumpIfAboveFreezeAreaStrategy(client)); // might be good, run later to override other jump behaviour
 	//botStrategies.push_back(new AutoKillWhenNoBotInputRecievedForTooLongStrategy(client, 30000)); //TODO, in case of failure. LOG POSITION
-	
+
 }
 
 void WasdBot::injectInput(CControls *controls) {
@@ -29,7 +30,14 @@ void WasdBot::injectInput(CControls *controls) {
 				player->m_Vel.y);
 	}
 
-	if (enabled) {
+	if (resetControlsNextFrame) {
+		resetControlsNextFrame = false;
+		//TODO deduplicate from BotStrategy::resetInput()
+		controls->m_InputDirectionLeft = 0;
+		controls->m_InputDirectionRight = 0;
+		controls->m_InputData.m_Jump = 0;
+		controls->m_InputData.m_Hook = 0;
+	} else if (enabled) {
 		for (std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {
 			BotStrategy* botStrategy = (*it);
 			botStrategy->execute(controls);
@@ -40,7 +48,7 @@ void WasdBot::injectInput(CControls *controls) {
 bool WasdBot::toggleEnabled() {
 	enabled = !enabled;
 	if (!enabled) {
-		//TODO reset controls
+		resetControlsNextFrame = true;
 	}
 	return enabled;
 }
