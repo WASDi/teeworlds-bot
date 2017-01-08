@@ -8,7 +8,7 @@ freezeStartTime(0) {
 
 void AutoKillWhenFrozenForTooLongStrategy::execute(CControls* controls) {
 	if (isFrozen()) {
-		long nowMillis = time_get() / 1000;
+		long nowMillis = getNowMillis();
 		if (freezeStartTime == 0) {
 			freezeStartTime = nowMillis;
 		} else {

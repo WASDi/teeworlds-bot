@@ -60,8 +60,8 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 		} else {
 			move(controls, DONT_MOVE);
 			// aim hook up and a little left
-			controls->m_InputData.m_TargetX = -10;
-			controls->m_InputData.m_TargetY = -100;
+			controls->m_MousePos.x = -10;
+			controls->m_MousePos.y = -100;
 
 			// maybe jump
 			bool canDoubleJump = !(player->m_Jumped & 2);

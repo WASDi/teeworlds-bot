@@ -19,6 +19,7 @@ protected:
 
 	bool isFrozen();
 
+	long getNowMillis();
 
 };
 

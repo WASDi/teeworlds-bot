@@ -18,7 +18,7 @@ void JumpWhenStuckMovingStrategy::execute(CControls* controls) {
 		pulseStartTime = 0;
 		jumpedLastFrame = false;
 	} else if (hasDirectionalInput(controls)) {
-		long nowMillis = time_get() / 1000;
+		long nowMillis = getNowMillis();
 		if (pulseStartTime == 0) {
 			pulseStartTime = nowMillis;
 			posRecently = client->m_PredictedChar.m_Pos;

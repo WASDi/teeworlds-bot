@@ -1,6 +1,7 @@
 #include "WasdBot.h"
 #include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
 #include "strategies/JumpWhenStuckMovingStrategy.h"
+#include "strategies/HammerNearbyPlayerStrategy.h"
 #include "strategies/blmapv3/MoveToChamberStrategy.h"
 #include <stdio.h>
 
@@ -11,7 +12,7 @@ enabled(false),
 debug(false),
 resetControlsNextFrame(false) {
 	//botStrategies.push_back(new HumanLikeMouseMovementStrategy(client)); //TODO, do first as others may override
-	//botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
+	botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
 	botStrategies.push_back(new MoveToChamberStrategy(client));
 	//botStrategies.push_back(new DoubleJumpIfAboveFreezeAreaStrategy(client)); // might be good, run later to override other jump behaviour
@@ -20,14 +21,14 @@ resetControlsNextFrame(false) {
 }
 
 void WasdBot::injectInput(CControls *controls) {
-	CCharacterCore* player = &client->m_PredictedChar;
 	if (!client->m_Snap.m_pLocalCharacter) {
 		//TODO somehow "click" for faster respawn
 		return;
 	}
 	if (debug) {
-		printf("Pos+Vel : %7.2f %+6.2f : %7.2f %+6.2f\n", player->m_Pos.x, player->m_Vel.x, player->m_Pos.y, player->m_Vel.y);
+		//printf("Pos+Vel : %7.2f %+6.2f : %7.2f %+6.2f\n", player->m_Pos.x, player->m_Vel.x, player->m_Pos.y, player->m_Vel.y);
 		//printf("Aim %3d %3d\n", controls->m_InputData.m_TargetX, controls->m_InputData.m_TargetY);
+		printf("%4.0f %4.0f\n", controls->m_MousePos.x, controls->m_MousePos.y);
 	}
 
 	if (resetControlsNextFrame) {
