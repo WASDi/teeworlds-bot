@@ -3,7 +3,7 @@
 JumpWhenFallingStrategy::JumpWhenFallingStrategy(CGameClient* client) : BotStrategy(client) {
 }
 
-void JumpWhenFallingStrategy::execute(CControls *controls) {
+void JumpWhenFallingStrategy::execute(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 	if (jumpedLastStep) {
 		controls->m_InputData.m_Jump = 0;

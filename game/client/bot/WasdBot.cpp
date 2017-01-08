@@ -1,5 +1,6 @@
 #include "WasdBot.h"
 #include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
+#include "strategies/JumpWhenStuckMovingStrategy.h"
 #include "strategies/blmapv3/MoveToChamberStrategy.h"
 #include <stdio.h>
 
@@ -14,7 +15,7 @@ resetControlsNextFrame(false) {
 	botStrategies.push_back(new MoveToChamberStrategy(client));
 	//botStrategies.push_back(new DoubleJumpIfAboveFreezeAreaStrategy(client)); // might be good, run later to override other jump behaviour
 	//botStrategies.push_back(new AutoKillWhenNoBotInputRecievedForTooLongStrategy(client, 30000)); //TODO, in case of failure. LOG POSITION
-
+	botStrategies.push_back(new JumpWhenStuckMovingStrategy(client));
 }
 
 void WasdBot::injectInput(CControls *controls) {

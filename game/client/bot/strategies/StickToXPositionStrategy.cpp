@@ -3,7 +3,7 @@
 StickToXPositionStrategy::StickToXPositionStrategy(CGameClient* client, float targetX) : BotStrategy(client), targetX(targetX) {
 }
 
-void StickToXPositionStrategy::execute(CControls *controls) {
+void StickToXPositionStrategy::execute(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 
 	const float sensitivity = 4;
