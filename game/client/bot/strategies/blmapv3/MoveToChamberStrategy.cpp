@@ -66,7 +66,6 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 				// HOOK
 				controls->m_InputData.m_Hook = 1;
 			}
-
 		}
 	}
 }
@@ -115,12 +114,14 @@ void MoveToChamberStrategy::move(CControls *controls, int directon) {
 		controls->m_InputDirectionRight = 0;
 	} else if (directon == MOVE_LEFT) {
 		controls->m_InputDirectionLeft = 1;
+		controls->m_InputDirectionRight = 0;
 	} else if (directon == MOVE_RIGHT) {
+		controls->m_InputDirectionLeft = 0;
 		controls->m_InputDirectionRight = 1;
 	}
 }
 
-const int MoveToChamberStrategy::STAGE1_X_POS_TO_JUMP[] = {2380, 2700, 3020};
+const int MoveToChamberStrategy::STAGE1_X_POS_TO_JUMP[] = {2400, 2725, 3050};
 const int MoveToChamberStrategy::STAGE2_X_POS_TO_JUMP[] = {3170, 2800, 2550};
 
 int MoveToChamberStrategy::shouldJump(const int* posXJumps, const int length) {

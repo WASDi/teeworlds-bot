@@ -21,6 +21,7 @@ resetControlsNextFrame(false) {
 void WasdBot::injectInput(CControls *controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 	if (!client->m_Snap.m_pLocalCharacter) {
+		//TODO somehow "click" for faster respawn
 		return;
 	}
 	if (debug) {
