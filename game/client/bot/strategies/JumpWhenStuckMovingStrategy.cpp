@@ -44,7 +44,7 @@ void JumpWhenStuckMovingStrategy::execute(CControls* controls) {
 }
 
 bool JumpWhenStuckMovingStrategy::hasDirectionalInput(CControls* controls) {
-	return controls->m_InputDirectionLeft != 0 &&
+	return controls->m_InputDirectionLeft != 0 ||
 			controls->m_InputDirectionRight != 0;
 }
 
