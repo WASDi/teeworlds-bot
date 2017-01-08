@@ -31,27 +31,35 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 	vec2 pos = player->m_Pos;
 
+	bool rightFromCenter = pos.x > CENTER_X;
+	int inv = rightFromCenter ? 1 : -1;
+
 	bool inTheMiddleY = pos.y >= 846 && pos.y <= 945;
 	bool hookedToDesiredSpot =
 			player->m_HookState == HOOK_GRABBED &&
 			player->m_HookPos.y > 500 &&
 			player->m_HookPos.y < 545 &&
-			player->m_HookPos.x > 3300 &&
-			player->m_HookPos.x < 3600;
+			(
+			(player->m_HookPos.x > CENTER_X - 460 && player->m_HookPos.x < CENTER_X - 160) ||
+			(player->m_HookPos.x > CENTER_X + 160 && player->m_HookPos.x < CENTER_X + 460)
+			);
 
 	if (hookedToDesiredSpot) {
 		if (inTheMiddleY) {
-			move(controls, MOVE_RIGHT);
-		} else if (pos.x < 3580) {
-			//near the upper left trap, escape
+			move(controls, rightFromCenter ? MOVE_LEFT : MOVE_RIGHT); // move to center
+		} else if (rightFromCenter ? pos.x > CENTER_X + 180 : pos.x < CENTER_X - 180) {
+			//near the upper traps, escape
 			controls->m_InputData.m_Hook = 0;
-			move(controls, MOVE_LEFT);
+			move(controls, rightFromCenter ? MOVE_RIGHT : MOVE_LEFT); // move away from center
 		}
 	} else {
-		if(player->m_HookState == HOOK_RETRACTED) {
+		if (player->m_HookState == HOOK_RETRACTED) {
 			controls->m_InputData.m_Hook = 0;
 		}
-		int targetX = inTheMiddleY ? 3575 : 3550;
+		int targetX = CENTER_X + 210 * inv;
+		if (inTheMiddleY) {
+			targetX -= 25 * inv; // move target closer to center
+		}
 		float delta = pos.x - targetX;
 		if (delta < -5) {
 			move(controls, MOVE_RIGHT);
@@ -59,8 +67,8 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 			move(controls, MOVE_LEFT);
 		} else {
 			move(controls, DONT_MOVE);
-			// aim hook up and a little left
-			controls->m_MousePos.x = -10;
+			// aim hook up and a little outwards
+			controls->m_MousePos.x = 10 * inv;
 			controls->m_MousePos.y = -100;
 
 			// maybe jump

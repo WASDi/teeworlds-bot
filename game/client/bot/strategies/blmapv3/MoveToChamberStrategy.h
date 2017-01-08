@@ -11,9 +11,11 @@ class MoveToChamberStrategy : public BotStrategy {
 	const static int STAGE2_X_POS_TO_JUMP[N_JUMPS_STAGE_2];
 
 	const static int X_POS_JUMP_MARGIN = 32;
-	
+
 	const static vec4 UPPER_STAIRS_COORDINATES;
 	const static vec4 LOWER_STAIRS_COORDINATES;
+
+	const static int CENTER_X = 3760; // middle of fight area
 
 public:
 
@@ -32,7 +34,7 @@ private:
 
 	void move(CControls* controls, int direction);
 	int shouldJump(const int* posXJumps, const int length);
-	
+
 	bool aboveLine(vec2 pos, vec4 lineData);
 
 };
