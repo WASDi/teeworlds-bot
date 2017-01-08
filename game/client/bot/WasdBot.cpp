@@ -11,13 +11,15 @@ jumpedLastStep(false),
 enabled(false),
 debug(false),
 resetControlsNextFrame(false) {
-	//botStrategies.push_back(new HumanLikeMouseMovementStrategy(client)); //TODO, do first as others may override
-	botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
+	/* TODO strategies: 
+	 * HumanLikeMouseMovementStrategy - To appear more humanlike
+	 * DoubleJumpIfAboveFreezeAreaStrategy - Can avoid being killed, perhaps only helps rarely
+	 * AutoKillWhenNoBotInputRecievedForTooLongStrategy - If no strategy changes input for a long time, respawn
+	 */
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
 	botStrategies.push_back(new MoveToChamberStrategy(client));
-	//botStrategies.push_back(new DoubleJumpIfAboveFreezeAreaStrategy(client)); // might be good, run later to override other jump behaviour
-	//botStrategies.push_back(new AutoKillWhenNoBotInputRecievedForTooLongStrategy(client, 30000)); //TODO, in case of failure. LOG POSITION
 	botStrategies.push_back(new JumpWhenStuckMovingStrategy(client));
+	botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
 }
 
 void WasdBot::injectInput(CControls *controls) {
