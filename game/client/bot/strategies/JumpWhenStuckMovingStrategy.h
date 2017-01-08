@@ -4,18 +4,22 @@
 #include "BotStrategy.h"
 
 class JumpWhenStuckMovingStrategy : public BotStrategy {
+	const static int PULSE_INTERVAL_MILLIS = 3000;
+
 public:
 
 	JumpWhenStuckMovingStrategy(CGameClient* client);
-	
+
 	void execute(CControls* controls);
 
 private:
-	
+
 	bool hasDirectionalInput(CControls* controls);
-	
-	long inputStartTime;
-	vec2 posOnInputStartTime;
+
+	long pulseStartTime;
+	vec2 posRecently;
+
+	bool jumpedLastFrame;
 
 };
 
