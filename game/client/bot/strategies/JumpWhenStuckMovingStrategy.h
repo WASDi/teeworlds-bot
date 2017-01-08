@@ -4,7 +4,7 @@
 #include "BotStrategy.h"
 
 class JumpWhenStuckMovingStrategy : public BotStrategy {
-	const static int PULSE_INTERVAL_MILLIS = 3000;
+	const static int PULSE_INTERVAL_MILLIS = 2500;
 
 public:
 

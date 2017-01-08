@@ -11,6 +11,7 @@ enabled(false),
 debug(false),
 resetControlsNextFrame(false) {
 	//botStrategies.push_back(new HumanLikeMouseMovementStrategy(client)); //TODO, do first as others may override
+	//botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
 	botStrategies.push_back(new MoveToChamberStrategy(client));
 	//botStrategies.push_back(new DoubleJumpIfAboveFreezeAreaStrategy(client)); // might be good, run later to override other jump behaviour
@@ -25,11 +26,8 @@ void WasdBot::injectInput(CControls *controls) {
 		return;
 	}
 	if (debug) {
-		printf("Pos+Vel : %7.2f %+6.2f : %7.2f %+6.2f\n",
-				player->m_Pos.x,
-				player->m_Vel.x,
-				player->m_Pos.y,
-				player->m_Vel.y);
+		printf("Pos+Vel : %7.2f %+6.2f : %7.2f %+6.2f\n", player->m_Pos.x, player->m_Vel.x, player->m_Pos.y, player->m_Vel.y);
+		//printf("Aim %3d %3d\n", controls->m_InputData.m_TargetX, controls->m_InputData.m_TargetY);
 	}
 
 	if (resetControlsNextFrame) {
