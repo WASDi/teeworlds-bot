@@ -4,6 +4,10 @@ MoveToChamberStrategy::MoveToChamberStrategy(CGameClient* client) : BotStrategy(
 }
 
 void MoveToChamberStrategy::execute(CControls* controls) {
+	if (isFrozen()) {
+		resetInput(controls);
+		return;
+	}
 	int stage = resolveStage();
 	if (stage != lastStage) {
 		resetInput(controls);
@@ -12,15 +16,13 @@ void MoveToChamberStrategy::execute(CControls* controls) {
 	if (stage == 1) {
 		move(controls, MOVE_RIGHT);
 		controls->m_InputData.m_Jump = shouldJump(STAGE1_X_POS_TO_JUMP, N_JUMPS_STAGE_1);
+		//TODO if gate open, jump directly to stage 4
 	} else if (stage == 2) {
 		goFromFightingAreaToUpperArea(controls);
 	} else if (stage == 3) {
 		moveThroughUpperArea(controls);
 	} else if (stage == 4) {
-		//behind the gate, jump up behind the chamber
-		//go to 2129,657
-		//aim -260,-240
-		//hook
+		jumpToBehindTheChamber(controls);
 	} else if (stage == 5) {
 		//there is no stage 5, after stage 4 we are inside the chamber. TODO Switch strategy.
 	}
@@ -88,8 +90,32 @@ void MoveToChamberStrategy::moveThroughUpperArea(CControls* controls) {
 	controls->m_InputData.m_Jump = shouldJump(STAGE2_X_POS_TO_JUMP, N_JUMPS_STAGE_2);
 	if (client->m_PredictedChar.m_Pos.y > 500) {
 		// down in a pothole, jump
-		CCharacterCore* player = &client->m_PredictedChar;
-		if (player->IsGrounded() && !isFrozen()) {
+		if (client->m_PredictedChar.IsGrounded()) {
+			controls->m_InputData.m_Jump = 1;
+		} else {
+			controls->m_InputData.m_Jump = 0;
+		}
+	}
+}
+
+const vec2 MoveToChamberStrategy::STAGE4_TARGET_POS = vec2(2129, 657);
+
+void MoveToChamberStrategy::jumpToBehindTheChamber(CControls* controls) {
+	CCharacterCore* player = &client->m_PredictedChar;
+	vec2 pos = player->m_Pos;
+
+	if (pos.x == STAGE4_TARGET_POS.x && pos.y == STAGE4_TARGET_POS.y) {
+		controls->m_MousePos.x = -260;
+		controls->m_MousePos.y = -240;
+		controls->m_InputData.m_Hook = 1;
+	} else if (player->m_HookState != HOOK_GRABBED) {
+		if (pos.x < STAGE4_TARGET_POS.x) {
+			move(controls, MOVE_RIGHT);
+		} else {
+			move(controls, MOVE_LEFT);
+		}
+
+		if (pos.y > STAGE4_TARGET_POS.y && player->IsGrounded()) {
 			controls->m_InputData.m_Jump = 1;
 		} else {
 			controls->m_InputData.m_Jump = 0;
@@ -136,7 +162,7 @@ int MoveToChamberStrategy::resolveStage() {
 }
 
 void MoveToChamberStrategy::move(CControls *controls, int directon) {
-	if (directon == DONT_MOVE || isFrozen()) {
+	if (directon == DONT_MOVE) {
 		controls->m_InputDirectionLeft = 0;
 		controls->m_InputDirectionRight = 0;
 	} else if (directon == MOVE_LEFT) {
@@ -152,9 +178,6 @@ const int MoveToChamberStrategy::STAGE1_X_POS_TO_JUMP[] = {2400, 2725, 3050};
 const int MoveToChamberStrategy::STAGE2_X_POS_TO_JUMP[] = {3170, 2800, 2550};
 
 int MoveToChamberStrategy::shouldJump(const int* posXJumps, const int length) {
-	if (isFrozen()) {
-		return 0;
-	}
 	vec2 pos = client->m_PredictedChar.m_Pos;
 	for (int i = 0; i < length; i++) {
 		int xPos = posXJumps[i];
