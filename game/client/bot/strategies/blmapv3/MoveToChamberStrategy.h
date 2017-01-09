@@ -16,6 +16,7 @@ class MoveToChamberStrategy : public BotStrategy {
 	const static vec4 LOWER_STAIRS_COORDINATES;
 
 	const static int CENTER_X = 3760; // middle of fight area
+	const static int GATE_X_POS = 1408;
 	const static vec2 STAGE4_TARGET_POS;
 
 public:
@@ -30,12 +31,15 @@ private:
 
 	int resolveStage();
 
+	void moveRightUnlessGateOpen(CControls* controls);
 	void goFromFightingAreaToUpperArea(CControls* controls);
 	void moveThroughUpperArea(CControls* controls);
 	void jumpToBehindTheChamber(CControls* controls);
 
 	void move(CControls* controls, int direction);
-	int shouldJump(const int* posXJumps, const int length);
+	void moveTowards(CControls *controls, int xPos, int xTarget);
+	void moveAwayFrom(CControls *controls, int xPos, int xTarget);
+	bool shouldJump(const int* posXJumps, const int length);
 
 	bool aboveLine(vec2 pos, vec4 lineData);
 

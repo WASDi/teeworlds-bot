@@ -32,6 +32,7 @@ void WasdBot::injectInput(CControls *controls) {
 		printf("Pos+Vel : %7.2f %+6.2f : %7.2f %+6.2f\n", player->m_Pos.x, player->m_Vel.x, player->m_Pos.y, player->m_Vel.y);
 		//printf("Aim %3d %3d\n", controls->m_InputData.m_TargetX, controls->m_InputData.m_TargetY);
 		//printf("%4.0f %4.0f\n", controls->m_MousePos.x, controls->m_MousePos.y);
+		//printf("%4.0f %4.0f\n", player->m_HookPos.x, player->m_HookPos.y);
 	}
 
 	if (resetControlsNextFrame) {

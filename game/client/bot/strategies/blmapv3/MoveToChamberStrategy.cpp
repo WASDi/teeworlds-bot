@@ -1,4 +1,5 @@
 #include "MoveToChamberStrategy.h"
+#include "Blmapv3Util.h"
 
 MoveToChamberStrategy::MoveToChamberStrategy(CGameClient* client) : BotStrategy(client), lastStage(0) {
 }
@@ -14,9 +15,7 @@ void MoveToChamberStrategy::execute(CControls* controls) {
 	}
 
 	if (stage == 1) {
-		move(controls, MOVE_RIGHT);
-		controls->m_InputData.m_Jump = shouldJump(STAGE1_X_POS_TO_JUMP, N_JUMPS_STAGE_1);
-		//TODO if gate open, jump directly to stage 4
+		moveRightUnlessGateOpen(controls);
 	} else if (stage == 2) {
 		goFromFightingAreaToUpperArea(controls);
 	} else if (stage == 3) {
@@ -27,6 +26,31 @@ void MoveToChamberStrategy::execute(CControls* controls) {
 		//there is no stage 5, after stage 4 we are inside the chamber. TODO Switch strategy.
 	}
 	lastStage = stage;
+}
+
+void MoveToChamberStrategy::moveRightUnlessGateOpen(CControls* controls) {
+	CCharacterCore* player = &client->m_PredictedChar;
+	if (Blmapv3Util::isGateOpen(client)) {
+		float absDelta = fabs(GATE_X_POS - player->m_Pos.x);
+		if (absDelta > 10) {
+			moveTowards(controls, player->m_Pos.x, GATE_X_POS);
+			controls->m_InputData.m_Hook = 0;
+		}
+
+		if (player->m_HookState == HOOK_GRABBED && player->m_HookPos.y > 950) {
+			//accidentally hooked too low
+			controls->m_InputData.m_Hook = 0;
+		} else if (absDelta < 20) {
+			//close enough, jump and hook
+			controls->m_InputData.m_Jump = player->IsGrounded();
+			controls->m_MousePos.x = 0;
+			controls->m_MousePos.y = -100;
+			controls->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED; //always hook, rehook if retracted
+		}
+	} else {
+		move(controls, MOVE_RIGHT);
+		controls->m_InputData.m_Jump = shouldJump(STAGE1_X_POS_TO_JUMP, N_JUMPS_STAGE_1);
+	}
 }
 
 void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
@@ -48,11 +72,11 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 
 	if (hookedToDesiredSpot) {
 		if (inTheMiddleY) {
-			move(controls, rightFromCenter ? MOVE_LEFT : MOVE_RIGHT); // move to center
+			moveTowards(controls, pos.x, CENTER_X); // move to center
 		} else if (rightFromCenter ? pos.x > CENTER_X + 180 : pos.x < CENTER_X - 180) {
 			//near the upper traps, escape
 			controls->m_InputData.m_Hook = 0;
-			move(controls, rightFromCenter ? MOVE_RIGHT : MOVE_LEFT); // move away from center
+			moveAwayFrom(controls, pos.x, CENTER_X);
 		}
 	} else {
 		if (player->m_HookState == HOOK_RETRACTED) {
@@ -90,11 +114,7 @@ void MoveToChamberStrategy::moveThroughUpperArea(CControls* controls) {
 	controls->m_InputData.m_Jump = shouldJump(STAGE2_X_POS_TO_JUMP, N_JUMPS_STAGE_2);
 	if (client->m_PredictedChar.m_Pos.y > 500) {
 		// down in a pothole, jump
-		if (client->m_PredictedChar.IsGrounded()) {
-			controls->m_InputData.m_Jump = 1;
-		} else {
-			controls->m_InputData.m_Jump = 0;
-		}
+		controls->m_InputData.m_Jump = client->m_PredictedChar.IsGrounded();
 	}
 }
 
@@ -161,7 +181,7 @@ int MoveToChamberStrategy::resolveStage() {
 	return 0;
 }
 
-void MoveToChamberStrategy::move(CControls *controls, int directon) {
+void MoveToChamberStrategy::move(CControls* controls, int directon) {
 	if (directon == DONT_MOVE) {
 		controls->m_InputDirectionLeft = 0;
 		controls->m_InputDirectionRight = 0;
@@ -174,18 +194,26 @@ void MoveToChamberStrategy::move(CControls *controls, int directon) {
 	}
 }
 
+void MoveToChamberStrategy::moveTowards(CControls* controls, int xPos, int xTarget) {
+	move(controls, xPos < xTarget ? MOVE_RIGHT : MOVE_LEFT);
+}
+
+void MoveToChamberStrategy::moveAwayFrom(CControls* controls, int xPos, int xAvoid) {
+	move(controls, xPos > xAvoid ? MOVE_RIGHT : MOVE_LEFT);
+}
+
 const int MoveToChamberStrategy::STAGE1_X_POS_TO_JUMP[] = {2400, 2725, 3050};
 const int MoveToChamberStrategy::STAGE2_X_POS_TO_JUMP[] = {3170, 2800, 2550};
 
-int MoveToChamberStrategy::shouldJump(const int* posXJumps, const int length) {
+bool MoveToChamberStrategy::shouldJump(const int* posXJumps, const int length) {
 	vec2 pos = client->m_PredictedChar.m_Pos;
 	for (int i = 0; i < length; i++) {
 		int xPos = posXJumps[i];
 		if (fabs(pos.x - xPos) < X_POS_JUMP_MARGIN) {
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 
 }
 
