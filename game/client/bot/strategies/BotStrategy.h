@@ -11,8 +11,6 @@ public:
 
 	virtual void execute(CControls* controls) = 0;
 
-	void resetInput(CControls* controls);
-
 protected:
 
 	CGameClient* client;

@@ -3,6 +3,7 @@
 #include "strategies/JumpWhenStuckMovingStrategy.h"
 #include "strategies/HammerNearbyPlayerStrategy.h"
 #include "strategies/blmapv3/MoveToChamberStrategy.h"
+#include "BotUtil.h"
 #include <stdio.h>
 
 WasdBot::WasdBot(CGameClient* client) :
@@ -22,7 +23,7 @@ resetControlsNextFrame(false) {
 	botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
 }
 
-void WasdBot::injectInput(CControls *controls) {
+void WasdBot::injectInput(CControls* controls) {
 	if (!client->m_Snap.m_pLocalCharacter) {
 		if (!resetControlsNextFrame) {
 			controls->m_InputData.m_Fire++;
@@ -39,12 +40,7 @@ void WasdBot::injectInput(CControls *controls) {
 	}
 
 	if (resetControlsNextFrame) {
-		//TODO deduplicate from BotStrategy::resetInput()
-		controls->m_InputDirectionLeft = 0;
-		controls->m_InputDirectionRight = 0;
-		controls->m_InputData.m_Jump = 0;
-		controls->m_InputData.m_Hook = 0;
-		controls->m_InputData.m_Fire = 0;
+		BotUtil::resetInput(controls);
 		resetControlsNextFrame = false;
 	} else if (enabled) {
 		for (std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {

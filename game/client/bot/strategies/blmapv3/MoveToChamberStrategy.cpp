@@ -1,17 +1,18 @@
 #include "MoveToChamberStrategy.h"
 #include "Blmapv3Util.h"
+#include "game/client/bot/BotUtil.h"
 
 MoveToChamberStrategy::MoveToChamberStrategy(CGameClient* client) : BotStrategy(client), lastStage(0) {
 }
 
 void MoveToChamberStrategy::execute(CControls* controls) {
 	if (isFrozen()) {
-		resetInput(controls);
+		BotUtil::resetInput(controls);
 		return;
 	}
 	int stage = resolveStage();
 	if (stage != lastStage) {
-		resetInput(controls);
+		BotUtil::resetInput(controls);
 	}
 
 	if (stage == 1) {
