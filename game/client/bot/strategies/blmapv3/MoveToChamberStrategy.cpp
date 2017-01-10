@@ -34,7 +34,7 @@ void MoveToChamberStrategy::moveRightUnlessGateOpen(CControls* controls) {
 	if (Blmapv3Util::isGateOpen(client)) {
 		float absDelta = fabs(GATE_X_POS - player->m_Pos.x);
 		if (absDelta > 10) {
-			moveTowards(controls, player->m_Pos.x, GATE_X_POS);
+			BotUtil::moveTowards(controls, player->m_Pos.x, GATE_X_POS);
 			controls->m_InputData.m_Hook = 0;
 		}
 
@@ -49,7 +49,7 @@ void MoveToChamberStrategy::moveRightUnlessGateOpen(CControls* controls) {
 			controls->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED; //always hook, rehook if retracted
 		}
 	} else {
-		move(controls, MOVE_RIGHT);
+		BotUtil::move(controls, MOVE_RIGHT);
 		controls->m_InputData.m_Jump = shouldJump(STAGE1_X_POS_TO_JUMP, N_JUMPS_STAGE_1);
 	}
 }
@@ -73,11 +73,11 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 
 	if (hookedToDesiredSpot) {
 		if (inTheMiddleY) {
-			moveTowards(controls, pos.x, CENTER_X); // move to center
+			BotUtil::moveTowards(controls, pos.x, CENTER_X); // move to center
 		} else if (rightFromCenter ? pos.x > CENTER_X + 180 : pos.x < CENTER_X - 180) {
 			//near the upper traps, escape
 			controls->m_InputData.m_Hook = 0;
-			moveAwayFrom(controls, pos.x, CENTER_X);
+			BotUtil::moveAwayFrom(controls, pos.x, CENTER_X);
 		}
 	} else {
 		if (player->m_HookState == HOOK_RETRACTED) {
@@ -89,11 +89,11 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 		}
 		float delta = pos.x - targetX;
 		if (delta < -5) {
-			move(controls, MOVE_RIGHT);
+			BotUtil::move(controls, MOVE_RIGHT);
 		} else if (delta > 5) {
-			move(controls, MOVE_LEFT);
+			BotUtil::move(controls, MOVE_LEFT);
 		} else {
-			move(controls, DONT_MOVE);
+			BotUtil::move(controls, DONT_MOVE);
 			// aim hook up and a little outwards
 			controls->m_MousePos.x = 10 * inv;
 			controls->m_MousePos.y = -100;
@@ -111,7 +111,7 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 }
 
 void MoveToChamberStrategy::moveThroughUpperArea(CControls* controls) {
-	move(controls, MOVE_LEFT);
+	BotUtil::move(controls, MOVE_LEFT);
 	controls->m_InputData.m_Jump = shouldJump(STAGE2_X_POS_TO_JUMP, N_JUMPS_STAGE_2);
 	if (client->m_PredictedChar.m_Pos.y > 500) {
 		// down in a pothole, jump
@@ -130,11 +130,7 @@ void MoveToChamberStrategy::jumpToBehindTheChamber(CControls* controls) {
 		controls->m_MousePos.y = -240;
 		controls->m_InputData.m_Hook = 1;
 	} else if (player->m_HookState != HOOK_GRABBED) {
-		if (pos.x < STAGE4_TARGET_POS.x) {
-			move(controls, MOVE_RIGHT);
-		} else {
-			move(controls, MOVE_LEFT);
-		}
+		BotUtil::moveTowards(controls, pos.x, STAGE4_TARGET_POS.x);
 
 		if (pos.y > STAGE4_TARGET_POS.y && player->IsGrounded()) {
 			controls->m_InputData.m_Jump = 1;
@@ -180,27 +176,6 @@ int MoveToChamberStrategy::resolveStage() {
 		client->SendKill(-1);
 	}
 	return 0;
-}
-
-void MoveToChamberStrategy::move(CControls* controls, int directon) {
-	if (directon == DONT_MOVE) {
-		controls->m_InputDirectionLeft = 0;
-		controls->m_InputDirectionRight = 0;
-	} else if (directon == MOVE_LEFT) {
-		controls->m_InputDirectionLeft = 1;
-		controls->m_InputDirectionRight = 0;
-	} else if (directon == MOVE_RIGHT) {
-		controls->m_InputDirectionLeft = 0;
-		controls->m_InputDirectionRight = 1;
-	}
-}
-
-void MoveToChamberStrategy::moveTowards(CControls* controls, int xPos, int xTarget) {
-	move(controls, xPos < xTarget ? MOVE_RIGHT : MOVE_LEFT);
-}
-
-void MoveToChamberStrategy::moveAwayFrom(CControls* controls, int xPos, int xAvoid) {
-	move(controls, xPos > xAvoid ? MOVE_RIGHT : MOVE_LEFT);
 }
 
 const int MoveToChamberStrategy::STAGE1_X_POS_TO_JUMP[] = {2400, 2725, 3050};

@@ -36,19 +36,9 @@ private:
 	void moveThroughUpperArea(CControls* controls);
 	void jumpToBehindTheChamber(CControls* controls);
 
-	void move(CControls* controls, int direction);
-	void moveTowards(CControls *controls, int xPos, int xTarget);
-	void moveAwayFrom(CControls *controls, int xPos, int xTarget);
 	bool shouldJump(const int* posXJumps, const int length);
-
 	bool aboveLine(vec2 pos, vec4 lineData);
 
-};
-
-enum {
-	MOVE_LEFT,
-	MOVE_RIGHT,
-	DONT_MOVE
 };
 
 #endif /* MOVETOCHAMBERSTRATEGY_H */
