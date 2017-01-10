@@ -24,7 +24,10 @@ resetControlsNextFrame(false) {
 
 void WasdBot::injectInput(CControls *controls) {
 	if (!client->m_Snap.m_pLocalCharacter) {
-		//TODO somehow "click" for faster respawn
+		if (!resetControlsNextFrame) {
+			controls->m_InputData.m_Fire++;
+			resetControlsNextFrame = true;
+		}
 		return;
 	}
 	if (debug) {
@@ -36,12 +39,13 @@ void WasdBot::injectInput(CControls *controls) {
 	}
 
 	if (resetControlsNextFrame) {
-		resetControlsNextFrame = false;
 		//TODO deduplicate from BotStrategy::resetInput()
 		controls->m_InputDirectionLeft = 0;
 		controls->m_InputDirectionRight = 0;
 		controls->m_InputData.m_Jump = 0;
 		controls->m_InputData.m_Hook = 0;
+		controls->m_InputData.m_Fire = 0;
+		resetControlsNextFrame = false;
 	} else if (enabled) {
 		for (std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {
 			BotStrategy* botStrategy = (*it);
