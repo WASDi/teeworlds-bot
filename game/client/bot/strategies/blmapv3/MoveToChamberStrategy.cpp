@@ -99,7 +99,7 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 
 			// maybe jump
 			bool canDoubleJump = !(player->m_Jumped & 2);
-			controls->m_InputData.m_Jump = player->IsGrounded() || (canDoubleJump && player->m_Vel.y > 5);
+			controls->m_InputData.m_Jump = pos.y > 850 && ((canDoubleJump && player->m_Vel.y > 5) || player->IsGrounded());
 
 			if (inTheMiddleY && pos.y <= 900) {
 				// HOOK

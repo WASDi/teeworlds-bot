@@ -14,6 +14,8 @@ private:
 
 	const long maxTimeMillis;
 	long freezeStartTime;
+	
+	bool aboutToUnfreeze();
 
 };
 

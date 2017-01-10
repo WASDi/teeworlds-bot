@@ -7,7 +7,7 @@ freezeStartTime(0) {
 }
 
 void AutoKillWhenFrozenForTooLongStrategy::execute(CControls* controls) {
-	if (isFrozen()) {
+	if (isFrozen() && !aboutToUnfreeze()) {
 		long nowMillis = getNowMillis();
 		if (freezeStartTime == 0) {
 			freezeStartTime = nowMillis;
@@ -21,4 +21,8 @@ void AutoKillWhenFrozenForTooLongStrategy::execute(CControls* controls) {
 	} else {
 		freezeStartTime = 0;
 	}
+}
+
+bool AutoKillWhenFrozenForTooLongStrategy::aboutToUnfreeze() {
+	return client->m_Snap.m_pLocalCharacter->m_Armor >= 5;
 }
