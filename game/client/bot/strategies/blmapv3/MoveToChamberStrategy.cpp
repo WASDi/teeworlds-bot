@@ -1,6 +1,7 @@
 #include "MoveToChamberStrategy.h"
 #include "Blmapv3Util.h"
 #include "game/client/bot/BotUtil.h"
+#include "Blmapv3StageResolver.h"
 
 MoveToChamberStrategy::MoveToChamberStrategy(CGameClient* client) : BotStrategy(client), lastStage(0) {
 }
@@ -10,7 +11,11 @@ void MoveToChamberStrategy::execute(CControls* controls) {
 		BotUtil::resetInput(controls);
 		return;
 	}
-	int stage = resolveStage();
+	if (client->m_PredictedChar.m_Pos.x > 3900) {
+		// It's easier to just respawn than to program return from this point
+		client->SendKill(-1);
+	}
+	int stage = Blmapv3StageResolver::resolveStage(&client->m_PredictedChar.m_Pos);
 	if (stage != lastStage) {
 		BotUtil::resetInput(controls);
 	}
@@ -140,44 +145,6 @@ void MoveToChamberStrategy::jumpToBehindTheChamber(CControls* controls) {
 	}
 }
 
-int MoveToChamberStrategy::resolveStage() {
-	vec2 pos = client->m_PredictedChar.m_Pos;
-	//TODO code that looks better using bounding boxes
-	if (pos.x < 1390) {
-		// spawn area
-		return 1;
-	} else if (pos.y > 1006 && pos.x < 3400) {
-		// lower area heading towards middle fighting area
-		return 1;
-	} else if (pos.y > 555 && pos.x >= 3400) {
-		// in battle area
-		return 2;
-	}
-	if (pos.y < 530 && pos.x > 2385 && pos.x < 3800) {
-		// upper area heading left to behind the gate
-		return 3;
-	}
-	if (pos.x > 1380 && pos.x <= 2385 && pos.y < 1000) {
-		// within bounding box for area behind gate (stage 4 or 5)
-		if (pos.x < 1850) {
-			// left of freeze before chamber
-			bool insideChamber = aboveLine(pos, UPPER_STAIRS_COORDINATES);
-			if (insideChamber) {
-				return 5; // success!
-			}
-		}
-		bool behindGateArea = aboveLine(pos, LOWER_STAIRS_COORDINATES);
-		if (behindGateArea) {
-			return 4;
-		}
-	}
-	if (pos.x > 3900) {
-		// It's easier to just respawn than to program return from this point
-		client->SendKill(-1);
-	}
-	return 0;
-}
-
 const int MoveToChamberStrategy::STAGE1_X_POS_TO_JUMP[] = {2400, 2725, 3050};
 const int MoveToChamberStrategy::STAGE2_X_POS_TO_JUMP[] = {3170, 2800, 2550};
 
@@ -191,14 +158,4 @@ bool MoveToChamberStrategy::shouldJump(const int* posXJumps, const int length) {
 	}
 	return false;
 
-}
-
-const vec4 MoveToChamberStrategy::UPPER_STAIRS_COORDINATES = vec4(1489, 699, 1809, 539);
-const vec4 MoveToChamberStrategy::LOWER_STAIRS_COORDINATES = vec4(1489, 987, 2385, 539);
-
-bool MoveToChamberStrategy::aboveLine(vec2 pos, vec4 lineData) {
-	float stairKValue = (lineData.y - lineData.w) / (lineData.z - lineData.x);
-	vec2 posNorm = vec2(pos.x - lineData.x, lineData.y - pos.y);
-
-	return posNorm.y > stairKValue * posNorm.x;
 }
