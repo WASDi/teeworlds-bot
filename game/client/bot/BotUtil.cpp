@@ -34,3 +34,14 @@ void BotUtil::moveTowards(CControls* controls, int xPos, int xTarget) {
 void BotUtil::moveAwayFrom(CControls* controls, int xPos, int xAvoid) {
 	move(controls, xPos > xAvoid ? MOVE_RIGHT : MOVE_LEFT);
 }
+
+bool BotUtil::shouldJump(vec2* pos, const int* posXJumps, const int arrLength) {
+	for (int i = 0; i < arrLength; i++) {
+		int xPos = posXJumps[i];
+		if (fabs(pos->x - xPos) < X_POS_JUMP_MARGIN) {
+			return true;
+		}
+	}
+	return false;
+
+}

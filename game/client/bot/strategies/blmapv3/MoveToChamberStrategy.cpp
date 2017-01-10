@@ -17,7 +17,7 @@ void MoveToChamberStrategy::execute(CControls* controls) {
 		// It's easier to just respawn than to program return from this point
 		client->SendKill(-1);
 	}
-	int stage = Blmapv3StageResolver::resolveStage(&pos);
+	int stage = Blmapv3StageResolver::resolveStage(pos);
 	if (stage != lastStage) {
 		BotUtil::resetInput(controls);
 	}
