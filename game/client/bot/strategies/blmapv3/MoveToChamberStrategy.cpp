@@ -11,11 +11,13 @@ void MoveToChamberStrategy::execute(CControls* controls) {
 		BotUtil::resetInput(controls);
 		return;
 	}
-	if (client->m_PredictedChar.m_Pos.x > 3900) {
+
+	vec2* pos = &client->m_PredictedChar.m_Pos;
+	if (pos->x > 4200 || pos->y > 1300) {
 		// It's easier to just respawn than to program return from this point
 		client->SendKill(-1);
 	}
-	int stage = Blmapv3StageResolver::resolveStage(&client->m_PredictedChar.m_Pos);
+	int stage = Blmapv3StageResolver::resolveStage(&pos);
 	if (stage != lastStage) {
 		BotUtil::resetInput(controls);
 	}
@@ -36,7 +38,8 @@ void MoveToChamberStrategy::execute(CControls* controls) {
 
 void MoveToChamberStrategy::moveRightUnlessGateOpen(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
-	if (Blmapv3Util::isGateOpen(client)) {
+	bool tooLateToMoveBack = player->m_Pos.x > STAGE1_X_POS_TO_JUMP[0];
+	if (!tooLateToMoveBack && Blmapv3Util::isGateOpen(client)) {
 		float absDelta = fabs(GATE_X_POS - player->m_Pos.x);
 		if (absDelta > 10) {
 			BotUtil::moveTowards(controls, player->m_Pos.x, GATE_X_POS);
@@ -92,11 +95,9 @@ void MoveToChamberStrategy::goFromFightingAreaToUpperArea(CControls* controls) {
 		if (inTheMiddleY) {
 			targetX -= 25 * inv; // move target closer to center
 		}
-		float delta = pos.x - targetX;
-		if (delta < -5) {
-			BotUtil::move(controls, MOVE_RIGHT);
-		} else if (delta > 5) {
-			BotUtil::move(controls, MOVE_LEFT);
+		float absDelta = fabs(pos.x - targetX);
+		if (absDelta > 5) {
+			BotUtil::moveTowards(controls, pos.x, targetX);
 		} else {
 			BotUtil::move(controls, DONT_MOVE);
 			// aim hook up and a little outwards

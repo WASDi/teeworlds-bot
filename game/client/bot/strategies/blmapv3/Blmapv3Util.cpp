@@ -1,7 +1,5 @@
 #include "Blmapv3Util.h"
 
-#include <stdio.h>
-
 bool Blmapv3Util::isGateOpen(CGameClient* client) {
 	IClient* iClient = client->Client();
 	int numSnapItems = iClient->SnapNumItems(IClient::SNAP_CURRENT);
