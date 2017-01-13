@@ -4,12 +4,15 @@
 
 Step5_OpenTheGateStrategy::Step5_OpenTheGateStrategy(CGameClient* client) :
 BotStrategy(client),
+nemesisClientId(-1),
 state(IDLE),
 avoidedDyingManouverLastFrame(false) {
 }
 
-const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1520+16, 657);
+const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1520 + 8, 657);
 const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
+
+#include <stdio.h>
 
 void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
@@ -20,6 +23,7 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 	}
 
 	CCharacterCore* enemy = 0;
+	int newNemesisClientId = -1; // prioritized enemy
 	bool enemyOnGateToggle = false;
 	for (int i = 0; i < MAX_CLIENTS; i++) {
 		if (i == client->m_Snap.m_LocalClientID || !client->m_Snap.m_aCharacters[i].m_Active)
@@ -27,14 +31,25 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
 		if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
-			// TODO if many enemies, cycle for 20 seconds each?
-			enemy = otherPlayer;
-			enemyOnGateToggle = xInsideGateToggle(otherPlayer->m_Pos.x);
-			break;
+			bool otherPlayerOnGateToggle = xInsideGateToggle(otherPlayer->m_Pos.x);
+
+			if (otherPlayerOnGateToggle || i == nemesisClientId) {
+				enemy = otherPlayer;
+				newNemesisClientId = i;
+				enemyOnGateToggle = otherPlayerOnGateToggle;
+				if (i == nemesisClientId) {
+					break;
+				} else {
+					// Potential nemesis found, keep looping in case old one appears
+				}
+			}
 		}
 	}
 
+	nemesisClientId = newNemesisClientId;
+
 	if (state == RETURN_TO_IDLE || !enemy) {
+		nemesisClientId = -1;
 		idle(controls);
 		return;
 	}
@@ -53,6 +68,7 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 			state = HAMMER_READY;
 		}
 	} else if (state == HAMMER_READY) {
+		BotUtil::moveTowards(controls, player->m_Pos.x, ATTACK_POS.x);
 		if (player->m_HookState != HOOK_GRABBED || player->IsGrounded()) {
 			state = RETURN_TO_IDLE; // fail, try again
 		} else if (distance(player->m_Pos, enemy->m_Pos) < 55) {
@@ -65,7 +81,7 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 			BotUtil::resetInput(controls);
 		} else {
 			BotUtil::resetInput(controls);
-			BotUtil::moveTowardsWithJump(controls, player, &ATTACK_POS, true);
+			BotUtil::moveTowardsWithJump(controls, player, &ATTACK_POS, false);
 		}
 		avoidDying(controls);
 	} else {

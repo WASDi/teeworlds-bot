@@ -11,6 +11,7 @@ public:
 
 private:
 
+	int nemesisClientId;
 	int state;
 
 	const static vec2 IDLE_POS;
