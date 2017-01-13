@@ -1,7 +1,7 @@
 #ifndef STICKTOXPOSITIONSTRATEGY_H
 #define STICKTOXPOSITIONSTRATEGY_H
 
-#include "BotStrategy.h"
+#include "../BotStrategy.h"
 
 class StickToXPositionStrategy : public BotStrategy {
 public:

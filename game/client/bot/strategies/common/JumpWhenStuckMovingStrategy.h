@@ -1,7 +1,7 @@
 #ifndef JUMPWHENSTUCKMOVINGSTRATEGY_H
 #define JUMPWHENSTUCKMOVINGSTRATEGY_H
 
-#include "BotStrategy.h"
+#include "../BotStrategy.h"
 
 class JumpWhenStuckMovingStrategy : public BotStrategy {
 	const static int PULSE_INTERVAL_MILLIS = 2000;

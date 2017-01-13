@@ -1,7 +1,7 @@
 #include "WasdBot.h"
-#include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
-#include "strategies/JumpWhenStuckMovingStrategy.h"
-#include "strategies/HammerNearbyPlayerStrategy.h"
+#include "strategies/common/AutoKillWhenFrozenForTooLongStrategy.h"
+#include "strategies/common/JumpWhenStuckMovingStrategy.h"
+#include "strategies/common/HammerNearbyPlayerStrategy.h"
 #include "BotUtil.h"
 #include "strategies/blmapv3/Blmapv3StrategyWrapper.h"
 #include <stdio.h>

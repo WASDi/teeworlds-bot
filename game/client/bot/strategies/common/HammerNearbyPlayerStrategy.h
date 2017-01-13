@@ -1,7 +1,7 @@
 #ifndef HAMMERNEARBYPLAYERSTRATEGY_H
 #define HAMMERNEARBYPLAYERSTRATEGY_H
 
-#include "BotStrategy.h"
+#include "../BotStrategy.h"
 
 class HammerNearbyPlayerStrategy : public BotStrategy {
 public:

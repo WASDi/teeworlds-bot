@@ -1,7 +1,7 @@
 #ifndef AUTOKILLWHENFROZENFORTOOLONGSTRATEGY_H
 #define AUTOKILLWHENFROZENFORTOOLONGSTRATEGY_H
 
-#include "BotStrategy.h"
+#include "../BotStrategy.h"
 
 class AutoKillWhenFrozenForTooLongStrategy : public BotStrategy {
 public:
