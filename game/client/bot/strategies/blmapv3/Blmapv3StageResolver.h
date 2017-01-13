@@ -7,11 +7,15 @@ class Blmapv3StageResolver {
 public:
 
 	static int resolveStage(vec2* pos);
+	
+	static bool insideChamber(vec2* pos);
+	static bool insideChamberFreeze(vec2* pos);
 
 private:
 
 	const static vec4 UPPER_STAIRS_COORDINATES;
 	const static vec4 LOWER_STAIRS_COORDINATES;
+	const static vec4 CHAMBER_FREEZE_COORDINATES;
 
 	static bool aboveLine(vec2* pos, const vec4* lineData);
 

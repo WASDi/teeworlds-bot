@@ -10,6 +10,9 @@ public:
 	void execute(CControls* controls);
 
 private:
+	
+	bool avoidedDyingManouverLastFrame;
+	void avoidDying(CControls* controls);
 
 };
 
