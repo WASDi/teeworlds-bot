@@ -11,9 +11,12 @@ public:
 
 	static void move(CControls* controls, int direction);
 	static void moveTowards(CControls *controls, int xPos, int xTarget);
+	static void moveTowardsWithJump(CControls* controls, CCharacterCore* player, const vec2* target, bool predict);
 	static void moveAwayFrom(CControls *controls, int xPos, int xTarget);
 
 	static bool shouldJump(vec2* pos, const int* posXJumps, const int arrLength);
+	
+	static bool atXPosition(int posX, int targetX, int tolerance);
 
 private:
 

@@ -17,7 +17,6 @@ void Step4_JumpUpToTheChamberStrategy::execute(CControls* controls) {
 		controls->m_MousePos.y = -240;
 		controls->m_InputData.m_Hook = 1;
 	} else if (player->m_HookState != HOOK_GRABBED) {
-		BotUtil::moveTowards(controls, pos.x, TARGET_POS.x);
-		controls->m_InputData.m_Jump = pos.y > TARGET_POS.y && player->IsGrounded();
+		BotUtil::moveTowardsWithJump(controls, player, &TARGET_POS, false);
 	}
 }
