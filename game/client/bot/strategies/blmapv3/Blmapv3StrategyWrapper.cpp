@@ -1,20 +1,19 @@
 #include "Blmapv3StrategyWrapper.h"
 
 #include "game/client/gameclient.h"
-#include "MoveToChamberStrategy.h"
 #include "Blmapv3StageResolver.h"
-#include "../../BotUtil.h"
+#include "game/client/bot/BotUtil.h"
 
-#include "steps/Step1_MoveRightUnlessGateOpenStrategy.h"
+#include "steps/steps.h"
 
 Blmapv3StrategyWrapper::Blmapv3StrategyWrapper(CGameClient* client) : BotStrategy(client), lastStage(0) {
 	// 4 steps to get to the chamber
-	strategies[0] = new Step1_MoveRightUnlessGateOpenStrategy(client);
-	//strategies[1] = new Step2_GoFromFightingAreaToUpperAreaStrategy(client);
-	//strategies[2] = new Step3_MoveThroughUpperAreaStrategy(client);
-	//strategies[3] = new Step4_JumpToBehindTheChamberStrategy(client);
+	stages[0] = new Step1_MoveRightUnlessGateOpenStrategy(client);
+	stages[1] = new Step2_GoFromFightingAreaToUpperAreaStrategy(client);
+	stages[2] = new Step3_MoveThroughUpperAreaStrategy(client);
+	stages[3] = new Step4_JumpUpToTheChamberStrategy(client);
 	// final step: 
-	//strategies[4] = new Step5_OpenTheGateStrategy(client);
+	stages[4] = new Step5_OpenTheGateStrategy(client);
 }
 
 void Blmapv3StrategyWrapper::execute(CControls* controls) {
@@ -33,9 +32,9 @@ void Blmapv3StrategyWrapper::execute(CControls* controls) {
 		BotUtil::resetInput(controls);
 	}
 
-	if (stage != 0) {
-		// zero indexed
-		strategies[stage - 1]->execute(controls);
+	if (stage > 0 && stage <= NUM_STAGES) {
+		// execute stage from 1 to NUM_STAGES
+		stages[stage - 1]->execute(controls);
 	}
 
 	lastStage = stage;

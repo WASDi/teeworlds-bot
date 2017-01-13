@@ -2,8 +2,8 @@
 #include "strategies/AutoKillWhenFrozenForTooLongStrategy.h"
 #include "strategies/JumpWhenStuckMovingStrategy.h"
 #include "strategies/HammerNearbyPlayerStrategy.h"
-#include "strategies/blmapv3/MoveToChamberStrategy.h"
 #include "BotUtil.h"
+#include "strategies/blmapv3/Blmapv3StrategyWrapper.h"
 #include <stdio.h>
 
 WasdBot::WasdBot(CGameClient* client) :
@@ -18,7 +18,8 @@ resetControlsNextFrame(false) {
 	 * AutoKillWhenNoBotInputRecievedForTooLongStrategy - If no strategy changes input for a long time, respawn
 	 */
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
-	botStrategies.push_back(new MoveToChamberStrategy(client));
+	//botStrategies.push_back(new MoveToChamberStrategy(client));
+	botStrategies.push_back(new Blmapv3StrategyWrapper(client));
 	botStrategies.push_back(new JumpWhenStuckMovingStrategy(client));
 	botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
 }

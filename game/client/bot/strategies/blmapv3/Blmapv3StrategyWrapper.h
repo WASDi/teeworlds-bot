@@ -15,7 +15,8 @@ private:
 
 	int lastStage;
 
-	BotStrategy* strategies[5];
+	const static int NUM_STAGES = 5;
+	BotStrategy* stages[NUM_STAGES];
 
 };
 
