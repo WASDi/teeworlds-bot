@@ -21,10 +21,11 @@ private:
 	void idle(CControls* controls);
 
 	bool insideGateToggle(vec2* pos);
-
-	bool avoidedDyingManouverLastFrame;
-	void avoidDying(CControls* controls);
-
+	
+	long avoidDyingUntil;
+	void maybeAvoidDying(CControls* controls);
+	void toggleAvoidDying();
+	
 };
 
 enum {
@@ -33,7 +34,8 @@ enum {
 	INIT_ATTACK,
 	WAIT_FOR_SECOND_JUMP,
 	HAMMER_READY,
-	RETURN_TO_IDLE
+	RETURN_TO_IDLE,
+	AVOID_DYING
 };
 
 #endif /* STEP5_OPENTHEGATESTRATEGY_H */

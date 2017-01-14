@@ -6,10 +6,11 @@ Step5_OpenTheGateStrategy::Step5_OpenTheGateStrategy(CGameClient* client) :
 BotStrategy(client),
 nemesisClientId(-1),
 state(IDLE),
-avoidedDyingManouverLastFrame(false) {
+avoidDyingUntil(0) {
 }
 
-const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1520 + 8, 657); // TODO cycle between positions?
+//const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1520 + 8, 657); // first step
+const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1584 - 8, 625); // second step
 const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
 
 #include <stdio.h>
@@ -17,9 +18,13 @@ const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
 void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 
-	if (avoidedDyingManouverLastFrame) {
-		BotUtil::resetInput(controls);
-		avoidedDyingManouverLastFrame = false;
+	if (state == AVOID_DYING) {
+		if (avoidDyingUntil > getNowMillis()) {
+			maybeAvoidDying(controls);
+			return;
+		} else {
+			state = IDLE;
+		}
 	}
 
 	CCharacterCore* enemy = 0;
@@ -88,7 +93,7 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 		} else {
 			BotUtil::resetInput(controls);
 			BotUtil::moveTowardsWithJump(controls, player, &ATTACK_POS, true);
-			avoidDying(controls);
+			maybeAvoidDying(controls);
 		}
 	} else {
 		// TODO rescue tees out of the chamber
@@ -111,52 +116,59 @@ void Step5_OpenTheGateStrategy::idle(CControls* controls) {
 		controls->m_InputData.m_Hook = 1;
 	} else {
 		BotUtil::moveTowardsWithJump(controls, player, &IDLE_POS, true);
-		//TODO remain hooked if hook position is good?
+		bool hookedToDesiredPosition = player->m_HookState == HOOK_GRABBED
+				&& fabs(player->m_HookPos.x - IDLE_POS.x) < TARGET_POS_TOLERANCE * 2
+				&& fabs(player->m_HookPos.y - (IDLE_POS.y + 42)) < TARGET_POS_TOLERANCE * 2;
+		controls->m_InputData.m_Hook = hookedToDesiredPosition;
 	}
-	avoidDying(controls);
+	maybeAvoidDying(controls);
 }
 
 bool Step5_OpenTheGateStrategy::insideGateToggle(vec2* pos) {
 	return pos->x <= 1489 && pos->y < 690;
 }
 
-void Step5_OpenTheGateStrategy::avoidDying(CControls* controls) {
+void Step5_OpenTheGateStrategy::maybeAvoidDying(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 	vec2* currPos = &player->m_Pos;
 	vec2 expectedPos = vec2(currPos->x + player->m_Vel.x * 5,
 			currPos->y + player->m_Vel.y * 5);
 
 	// TODO if I am hooking AND I am hooked THEN remain hooking?
-	// TODO if I am being hooked by someone outside, hook down and move left
 	// TODO use intersect to try not grab players when hooking?
-	// TODO remain hooked for at 250ms or so
-	
+
 	if (expectedPos.x > 1750) {
 		// Upper right
-		avoidedDyingManouverLastFrame = true;
 		BotUtil::move(controls, MOVE_LEFT);
-		// Hook down down left
-		controls->m_MousePos.x = -50;
+		// Hook down and a little left
+		controls->m_MousePos.x = -10;
 		controls->m_MousePos.y = 100;
 		controls->m_InputData.m_Hook = 1;
+		toggleAvoidDying();
 	} else if (expectedPos.x < 1440) {
 		// Lower left
-		avoidedDyingManouverLastFrame = true;
+		// Hook and move right, maybe jump
 		BotUtil::move(controls, MOVE_RIGHT);
-		if (currPos->y > 689) {
-			controls->m_InputData.m_Jump = 1;
-		}
-		// Hook up right
+		controls->m_InputData.m_Jump = currPos->y > 689; // fell of the edge
+		controls->m_MousePos.x = 100;
+		controls->m_MousePos.y = 0;
+		controls->m_InputData.m_Hook = 1;
+		toggleAvoidDying();
+	} else if (Blmapv3StageResolver::insideChamberFreeze(&expectedPos)) {
+		// Upper left
+		BotUtil::move(controls, MOVE_RIGHT);
+		// Hook up right, because down is too far
 		controls->m_MousePos.x = 100;
 		controls->m_MousePos.y = -100;
 		controls->m_InputData.m_Hook = 1;
-	} else if (Blmapv3StageResolver::insideChamberFreeze(&expectedPos)) {
-		// Upper left
-		avoidedDyingManouverLastFrame = true;
-		BotUtil::move(controls, MOVE_RIGHT);
-		// Hook down right
-		controls->m_MousePos.x = 100;
-		controls->m_MousePos.y = 100;
-		controls->m_InputData.m_Hook = 1;
+		toggleAvoidDying();
 	}
+}
+
+void Step5_OpenTheGateStrategy::toggleAvoidDying() {
+	if (state == AVOID_DYING) {
+		return;
+	}
+	state = AVOID_DYING;
+	avoidDyingUntil = getNowMillis() + 300;
 }
