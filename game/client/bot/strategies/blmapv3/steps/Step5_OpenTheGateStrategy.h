@@ -16,11 +16,11 @@ private:
 
 	const static vec2 IDLE_POS;
 	const static vec2 ATTACK_POS;
-	const static int TARGET_POS_TOLERANCE = 8;
+	const static int TARGET_POS_TOLERANCE = 16;
 
 	void idle(CControls* controls);
 
-	bool xInsideGateToggle(int x);
+	bool insideGateToggle(vec2* pos);
 
 	bool avoidedDyingManouverLastFrame;
 	void avoidDying(CControls* controls);

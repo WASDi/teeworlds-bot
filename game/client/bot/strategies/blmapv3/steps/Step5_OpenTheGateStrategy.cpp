@@ -9,7 +9,7 @@ state(IDLE),
 avoidedDyingManouverLastFrame(false) {
 }
 
-const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1520 + 8, 657);
+const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1520 + 8, 657); // TODO cycle between positions?
 const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
 
 #include <stdio.h>
@@ -31,17 +31,20 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
 		if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
-			bool otherPlayerOnGateToggle = xInsideGateToggle(otherPlayer->m_Pos.x);
+			bool otherPlayerOnGateToggle = insideGateToggle(&otherPlayer->m_Pos);
+			bool foundNewEnemy = false;
+			if (!enemy) {
+				if (otherPlayerOnGateToggle || i == nemesisClientId) {
+					foundNewEnemy = true;
+				}
+			} else if (otherPlayerOnGateToggle) {
+				foundNewEnemy = true;
+			}
 
-			if (otherPlayerOnGateToggle || i == nemesisClientId) {
+			if (foundNewEnemy) {
 				enemy = otherPlayer;
 				newNemesisClientId = i;
 				enemyOnGateToggle = otherPlayerOnGateToggle;
-				if (i == nemesisClientId) {
-					break;
-				} else {
-					// Potential nemesis found, keep looping in case old one appears
-				}
 			}
 		}
 	}
@@ -61,6 +64,9 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 		controls->m_InputData.m_Jump = 1;
 		state = WAIT_FOR_SECOND_JUMP;
 	} else if (state == WAIT_FOR_SECOND_JUMP) {
+		if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
+			state = RETURN_TO_IDLE;
+		}
 		BotUtil::moveTowards(controls, player->m_Pos.x, ATTACK_POS.x);
 		controls->m_InputData.m_Jump = 0;
 		if (player->m_Vel.y > 0.5) {
@@ -81,10 +87,16 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 			BotUtil::resetInput(controls);
 		} else {
 			BotUtil::resetInput(controls);
-			BotUtil::moveTowardsWithJump(controls, player, &ATTACK_POS, false);
+			BotUtil::moveTowardsWithJump(controls, player, &ATTACK_POS, true);
+			avoidDying(controls);
 		}
-		avoidDying(controls);
 	} else {
+		// TODO rescue tees out of the chamber
+		// if not hooked and in chamber, push out
+		// if frozen in lower left, drag out the underway
+		// if in upper right, push out
+		// if other player is frozen in safe area, hook out
+
 		idle(controls);
 	}
 }
@@ -104,26 +116,28 @@ void Step5_OpenTheGateStrategy::idle(CControls* controls) {
 	avoidDying(controls);
 }
 
-bool Step5_OpenTheGateStrategy::xInsideGateToggle(int x) {
-	return x <= 1489;
+bool Step5_OpenTheGateStrategy::insideGateToggle(vec2* pos) {
+	return pos->x <= 1489 && pos->y < 690;
 }
 
 void Step5_OpenTheGateStrategy::avoidDying(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 	vec2* currPos = &player->m_Pos;
-	vec2 expectedPos = vec2(currPos->x + player->m_Vel.x * 10,
-			currPos->y + player->m_Vel.y * 10);
+	vec2 expectedPos = vec2(currPos->x + player->m_Vel.x * 5,
+			currPos->y + player->m_Vel.y * 5);
 
-	// TODO if I am hooking AND I am hooked THEN remain hooking
-
+	// TODO if I am hooking AND I am hooked THEN remain hooking?
+	// TODO if I am being hooked by someone outside, hook down and move left
 	// TODO use intersect to try not grab players when hooking?
-	if (expectedPos.x > 1800) {
+	// TODO remain hooked for at 250ms or so
+	
+	if (expectedPos.x > 1750) {
 		// Upper right
 		avoidedDyingManouverLastFrame = true;
 		BotUtil::move(controls, MOVE_LEFT);
-		// Hook up left
-		controls->m_MousePos.x = -100;
-		controls->m_MousePos.y = -100;
+		// Hook down down left
+		controls->m_MousePos.x = -50;
+		controls->m_MousePos.y = 100;
 		controls->m_InputData.m_Hook = 1;
 	} else if (expectedPos.x < 1440) {
 		// Lower left

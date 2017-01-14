@@ -16,6 +16,7 @@ resetControlsNextFrame(false) {
 	 * HumanLikeMouseMovementStrategy - To appear more humanlike
 	 * DoubleJumpIfAboveFreezeAreaStrategy - Can avoid being killed, perhaps only helps rarely
 	 * AutoKillWhenNoBotInputRecievedForTooLongStrategy - If no strategy changes input for a long time, respawn
+	 * Do smileys
 	 */
 	botStrategies.push_back(new AutoKillWhenFrozenForTooLongStrategy(client, 10000));
 	botStrategies.push_back(new Blmapv3StrategyWrapper(client));

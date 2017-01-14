@@ -7,6 +7,7 @@ int Blmapv3StageResolver::resolveStage(vec2* pos) {
 		return 1;
 	} else if (pos->y > 1006 && pos->x < 3400) {
 		// lower area heading towards middle fighting area
+		// TODO also return if on the middle platform
 		return 1;
 	} else if (pos->y > 555 && pos->x >= 3400) {
 		// in battle area
@@ -42,7 +43,7 @@ bool Blmapv3StageResolver::insideChamberFreeze(vec2* pos) {
 
 const vec4 Blmapv3StageResolver::UPPER_STAIRS_COORDINATES = vec4(1489, 699, 1809, 539);
 const vec4 Blmapv3StageResolver::LOWER_STAIRS_COORDINATES = vec4(1489, 987, 2385, 539);
-const vec4 Blmapv3StageResolver::CHAMBER_FREEZE_COORDINATES = vec4(1392, 560+20, 1520, 432+20);
+const vec4 Blmapv3StageResolver::CHAMBER_FREEZE_COORDINATES = vec4(1392, 560 + 32, 1520 + 32, 432 + 32);
 
 bool Blmapv3StageResolver::aboveLine(vec2* pos, const vec4* lineData) {
 	float stairKValue = (lineData->y - lineData->w) / (lineData->z - lineData->x);

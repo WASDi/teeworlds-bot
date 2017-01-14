@@ -11,6 +11,7 @@ const int Step1_MoveRightUnlessGateOpenStrategy::X_POS_TO_JUMP[] = {2400, 2725, 
 void Step1_MoveRightUnlessGateOpenStrategy::execute(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 	bool tooLateToMoveBack = player->m_Pos.x > X_POS_TO_JUMP[0];
+	//TODO if player blocking the gate is reachable from bellow and not hooking, grab him away
 	if (!tooLateToMoveBack && Blmapv3Util::isGateOpen(client)) {
 		float absDelta = fabs(GATE_X_POS - player->m_Pos.x);
 		if (absDelta > 10) {
@@ -29,6 +30,7 @@ void Step1_MoveRightUnlessGateOpenStrategy::execute(CControls* controls) {
 			controls->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED; //always hook, rehook if retracted
 		}
 	} else {
+		//TODO hook the ceiling. Often falls down when jumping near other players
 		BotUtil::move(controls, MOVE_RIGHT);
 		controls->m_InputData.m_Jump = BotUtil::shouldJump(&player->m_Pos, X_POS_TO_JUMP, N_JUMPS);
 	}
