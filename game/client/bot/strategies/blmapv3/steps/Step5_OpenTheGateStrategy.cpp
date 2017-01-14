@@ -7,6 +7,7 @@ BotStrategy(client),
 nemesisClientId(-1),
 state(IDLE),
 avoidDyingUntil(0) {
+	extras = Step5Extras();
 }
 
 const vec2 Step5_OpenTheGateStrategy::IDLE_POS1 = vec2(1520 + 8, 657);
@@ -58,7 +59,11 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 
 	if (state == RETURN_TO_IDLE || !enemy) {
 		nemesisClientId = -1;
-		idle(controls);
+		if (!enemy) {
+			maybeHelpSomeone(controls);
+		} else {
+			idle(controls);
+		}
 		return;
 	}
 
@@ -96,14 +101,35 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 			maybeAvoidDying(controls);
 		}
 	} else {
-		// TODO rescue tees out of the chamber
-		// if not hooked and in chamber, push out
-		// if frozen in lower left, drag out the underway
-		// if in upper right, push out
-		// if other player is frozen in safe area, hook out
 
 		idle(controls);
 	}
+}
+
+void Step5_OpenTheGateStrategy::maybeHelpSomeone(CControls* controls) {
+	CCharacterCore* player = &client->m_PredictedChar;
+	for (int i = 0; i < MAX_CLIENTS; i++) {
+		if (i == client->m_Snap.m_LocalClientID || !client->m_Snap.m_aCharacters[i].m_Active)
+			continue;
+
+		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
+		if (otherPlayer->m_Pos.x >= 1390 && otherPlayer->m_Pos.x <= 1424 && otherPlayer->m_Pos.y == 785) {
+			//Frozen in lower left
+		} else if (extras.pushOutFromUpperRight.applicable(&otherPlayer->m_Pos)) {
+			//Frozen in upper right
+			extras.pushOutFromUpperRight.execute(controls, player, otherPlayer);
+			return;
+		} else if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
+			bool frozen = otherPlayer->m_Input.m_WantedWeapon == WEAPON_NINJA;
+			bool idle = false; // TODO resolve if no input for X seconds
+			if (frozen || idle) {
+				// TODO: throw out
+			}
+		}
+
+	}
+
+	idle(controls); // Idle if no one to help
 }
 
 void Step5_OpenTheGateStrategy::idle(CControls* controls) {

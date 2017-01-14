@@ -2,6 +2,7 @@
 #define STEP5_OPENTHEGATESTRATEGY_H
 
 #include "../../BotStrategy.h"
+#include "step5extra/Step5Extras.h"
 
 class Step5_OpenTheGateStrategy : public BotStrategy {
 public:
@@ -23,18 +24,20 @@ private:
 	const static int TARGET_POS_TOLERANCE = 14;
 
 	void idle(CControls* controls);
+	void maybeHelpSomeone(CControls* controls);
 
 	bool insideGateToggle(vec2* pos);
 
 	long avoidDyingUntil;
 	void maybeAvoidDying(CControls* controls);
 	void toggleAvoidDying();
+	
+	Step5Extras extras;
 
 };
 
 enum {
 	IDLE,
-	GO_TO_ATTACK,
 	INIT_ATTACK,
 	WAIT_FOR_SECOND_JUMP,
 	HAMMER_READY,
