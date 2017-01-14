@@ -38,7 +38,7 @@ bool Blmapv3StageResolver::insideChamber(vec2* pos) {
 }
 
 bool Blmapv3StageResolver::insideChamberFreeze(vec2* pos) {
-	return aboveLine(pos, &CHAMBER_FREEZE_COORDINATES);
+	return pos->x < 1520 && aboveLine(pos, &CHAMBER_FREEZE_COORDINATES);
 }
 
 const vec4 Blmapv3StageResolver::UPPER_STAIRS_COORDINATES = vec4(1489, 699, 1809, 539);

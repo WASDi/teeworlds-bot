@@ -14,18 +14,22 @@ private:
 	int nemesisClientId;
 	int state;
 
-	const static vec2 IDLE_POS;
+	const static vec2 IDLE_POS1;
+	const static vec2 IDLE_POS2;
+	const static long IDLE_POS_CYCLE_TIME = 10000;
+	vec2* getDesiredIdlePos();
+
 	const static vec2 ATTACK_POS;
-	const static int TARGET_POS_TOLERANCE = 16;
+	const static int TARGET_POS_TOLERANCE = 14;
 
 	void idle(CControls* controls);
 
 	bool insideGateToggle(vec2* pos);
-	
+
 	long avoidDyingUntil;
 	void maybeAvoidDying(CControls* controls);
 	void toggleAvoidDying();
-	
+
 };
 
 enum {

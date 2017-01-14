@@ -23,6 +23,7 @@ void Step4_JumpUpToTheChamberStrategy::execute(CControls* controls) {
 		}
 		
 	} else if (player->m_HookState != HOOK_GRABBED) {
+		//TODO if in this state for too long, move left instead
 		BotUtil::moveTowardsWithJump(controls, player, &TARGET_POS, false);
 	}
 }

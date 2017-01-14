@@ -9,8 +9,8 @@ state(IDLE),
 avoidDyingUntil(0) {
 }
 
-//const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1520 + 8, 657); // first step
-const vec2 Step5_OpenTheGateStrategy::IDLE_POS = vec2(1584 - 8, 625); // second step
+const vec2 Step5_OpenTheGateStrategy::IDLE_POS1 = vec2(1520 + 8, 657);
+const vec2 Step5_OpenTheGateStrategy::IDLE_POS2 = vec2(1584, 625);
 const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
 
 #include <stdio.h>
@@ -110,15 +110,16 @@ void Step5_OpenTheGateStrategy::idle(CControls* controls) {
 	CCharacterCore* player = &client->m_PredictedChar;
 	state = IDLE;
 	BotUtil::resetInput(controls);
-	if (BotUtil::atXPosition(player->m_Pos.x, IDLE_POS.x, TARGET_POS_TOLERANCE)) {
+	vec2* idlePos = getDesiredIdlePos();
+	if (BotUtil::atXPosition(player->m_Pos.x, idlePos->x, TARGET_POS_TOLERANCE)) {
 		controls->m_MousePos.x = 0;
 		controls->m_MousePos.y = 100;
 		controls->m_InputData.m_Hook = 1;
 	} else {
-		BotUtil::moveTowardsWithJump(controls, player, &IDLE_POS, true);
+		BotUtil::moveTowardsWithJump(controls, player, idlePos, true);
 		bool hookedToDesiredPosition = player->m_HookState == HOOK_GRABBED
-				&& fabs(player->m_HookPos.x - IDLE_POS.x) < TARGET_POS_TOLERANCE * 2
-				&& fabs(player->m_HookPos.y - (IDLE_POS.y + 42)) < TARGET_POS_TOLERANCE * 2;
+				&& fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2
+				&& fabs(player->m_HookPos.y - (idlePos->y + 42)) < TARGET_POS_TOLERANCE * 2;
 		controls->m_InputData.m_Hook = hookedToDesiredPosition;
 	}
 	maybeAvoidDying(controls);
@@ -171,4 +172,10 @@ void Step5_OpenTheGateStrategy::toggleAvoidDying() {
 	}
 	state = AVOID_DYING;
 	avoidDyingUntil = getNowMillis() + 300;
+}
+
+vec2* Step5_OpenTheGateStrategy::getDesiredIdlePos() {
+	// TODO instead of cycling with time, return pos1 if another player is able to hook from outside
+	return (vec2*) (getNowMillis() % (IDLE_POS_CYCLE_TIME * 2) > IDLE_POS_CYCLE_TIME ?
+			&IDLE_POS1 : &IDLE_POS2);
 }
