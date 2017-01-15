@@ -38,4 +38,3 @@ enum {
 };
 
 #endif /* DRAGOUTFROMLOWERLEFT_H */
-

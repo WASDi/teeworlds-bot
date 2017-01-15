@@ -19,7 +19,7 @@ void DragOutFromLowerLeft::executeInternal() {
 	if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
 		// grabbed wall, not supposed to happen
 		controls->m_InputData.m_Hook = 0;
-		state = PRE_INIT;
+		done = true;
 		return;
 	}
 
