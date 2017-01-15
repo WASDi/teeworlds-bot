@@ -192,7 +192,7 @@ void Step5_OpenTheGateStrategy::maybeAvoidDying() {
 		// Upper right
 		BotUtil::move(controls, MOVE_LEFT);
 		// Hook down and a little left
-		getControls()->m_MousePos.x = -10;
+		getControls()->m_MousePos.x = -20;
 		getControls()->m_MousePos.y = 100;
 		getControls()->m_InputData.m_Hook = 1;
 		toggleAvoidDying();

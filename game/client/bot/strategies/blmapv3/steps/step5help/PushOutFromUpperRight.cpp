@@ -14,6 +14,10 @@ const vec2 PushOutFromUpperRight::TARGET = vec2(1809, 529);
 const vec2 PushOutFromUpperRight::PRE_TARGET = vec2(TARGET.x - 48, TARGET.y);
 
 void PushOutFromUpperRight::executeInternal() {
+	if(!applicable(&other->m_Pos)) {
+		done = true;
+		return;
+	}
 	if (player->m_Pos.x == TARGET.x) {
 		if (player->m_Pos.y == TARGET.y) {
 			controls->m_MousePos.x = 200;
@@ -29,6 +33,7 @@ void PushOutFromUpperRight::executeInternal() {
 			controls->m_MousePos.x = 100;
 			controls->m_MousePos.y = 0;
 			controls->m_InputData.m_Fire = 1;
+			BotUtil::move(controls, MOVE_LEFT);
 			done = true;
 		} else {
 			//in air, not high enough
