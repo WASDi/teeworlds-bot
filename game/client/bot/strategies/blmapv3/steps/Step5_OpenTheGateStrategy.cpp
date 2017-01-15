@@ -3,6 +3,7 @@
 #include "game/client/bot/BotUtil.h"
 
 #include "step5help/PushOutFromUpperRight.h"
+#include "step5help/DragOutFromLowerLeft.h"
 
 Step5_OpenTheGateStrategy::Step5_OpenTheGateStrategy(CGameClient* client) :
 BotStrategy(client),
@@ -113,12 +114,11 @@ void Step5_OpenTheGateStrategy::execute() {
 
 void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 	if (helpStrategy != 0) {
-		if(helpStrategy->isDone()) {
+		if (helpStrategy->isDone()) {
 			delete helpStrategy;
 			helpStrategy = 0;
 			state = RETURN_TO_IDLE;
-		}
-		else {
+		} else {
 			helpStrategy->execute();
 			state = HELPING;
 		}
@@ -131,8 +131,11 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 			continue;
 
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
-		if (otherPlayer->m_Pos.x >= 1390 && otherPlayer->m_Pos.x <= 1424 && otherPlayer->m_Pos.y == 785) {
+		if (DragOutFromLowerLeft::applicable(&otherPlayer->m_Pos)) {
 			//Frozen in lower left
+			helpStrategy = new DragOutFromLowerLeft(getControls(), player, otherPlayer);
+			state = HELPING;
+			return;
 		} else if (PushOutFromUpperRight::applicable(&otherPlayer->m_Pos)) {
 			//Frozen in upper right
 			helpStrategy = new PushOutFromUpperRight(getControls(), player, otherPlayer);

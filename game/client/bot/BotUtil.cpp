@@ -31,11 +31,11 @@ void BotUtil::moveTowards(CControls* controls, int xPos, int xTarget) {
 }
 
 void BotUtil::moveTowardsWithJump(CControls* controls, CCharacterCore* player, const vec2* target, bool predict) {
-	int targetX = player->m_Pos.x;
+	int xPos = player->m_Pos.x;
 	if (predict) {
-		targetX += player->m_Vel.x * 2;
+		xPos += player->m_Vel.x * 2;
 	}
-	BotUtil::moveTowards(controls, targetX, target->x);
+	BotUtil::moveTowards(controls, xPos, target->x);
 	controls->m_InputData.m_Jump = player->m_Pos.y > target->y && player->IsGrounded();
 }
 
