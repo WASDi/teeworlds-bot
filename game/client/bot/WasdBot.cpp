@@ -24,10 +24,11 @@ resetControlsNextFrame(false) {
 	botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
 }
 
-void WasdBot::injectInput(CControls* controls) {
+void WasdBot::injectInput() {
 	if (!client->m_Snap.m_pLocalCharacter) {
 		if (!resetControlsNextFrame) {
-			controls->m_InputData.m_Fire++;
+			// Click fire for faster respawn
+			client->m_pControls->m_InputData.m_Fire++;
 			resetControlsNextFrame = true;
 		}
 		return;
@@ -41,12 +42,12 @@ void WasdBot::injectInput(CControls* controls) {
 	}
 
 	if (resetControlsNextFrame) {
-		BotUtil::resetInput(controls);
+		BotUtil::resetInput(client->m_pControls);
 		resetControlsNextFrame = false;
 	} else if (enabled) {
 		for (std::list<BotStrategy*>::iterator it = botStrategies.begin(); it != botStrategies.end(); ++it) {
 			BotStrategy* botStrategy = (*it);
-			botStrategy->execute(controls);
+			botStrategy->execute();
 		}
 	}
 }

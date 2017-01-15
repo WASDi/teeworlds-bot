@@ -10,3 +10,7 @@ bool BotStrategy::isFrozen() {
 long BotStrategy::getNowMillis() {
 	return time_get() / 1000;
 }
+
+CControls* BotStrategy::getControls() {
+	return client->m_pControls;
+}

@@ -8,7 +8,7 @@ class Step5_OpenTheGateStrategy : public BotStrategy {
 public:
 	Step5_OpenTheGateStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 
@@ -23,13 +23,13 @@ private:
 	const static vec2 ATTACK_POS;
 	const static int TARGET_POS_TOLERANCE = 14;
 
-	void idle(CControls* controls);
-	void maybeHelpSomeone(CControls* controls);
+	void idle();
+	void maybeHelpSomeone();
 
 	bool insideGateToggle(vec2* pos);
 
 	long avoidDyingUntil;
-	void maybeAvoidDying(CControls* controls);
+	void maybeAvoidDying();
 	void toggleAvoidDying();
 	
 	Step5HelpStrategy* helpStrategy;

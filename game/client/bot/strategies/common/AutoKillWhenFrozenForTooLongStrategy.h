@@ -8,7 +8,7 @@ public:
 
 	AutoKillWhenFrozenForTooLongStrategy(CGameClient* client, long maxTimeMillis);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 

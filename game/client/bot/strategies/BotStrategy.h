@@ -1,15 +1,15 @@
 #ifndef BOTSTRATEGY_H
 #define BOTSTRATEGY_H
 
-#include <game/gamecore.h>
 #include <game/client/components/controls.h>
+#include <game/client/gameclient.h>
 
 class BotStrategy {
 public:
 
 	BotStrategy(CGameClient* client);
 
-	virtual void execute(CControls* controls) = 0;
+	virtual void execute() = 0;
 
 protected:
 
@@ -18,6 +18,8 @@ protected:
 	bool isFrozen();
 
 	long getNowMillis();
+	
+	CControls* getControls();
 
 };
 

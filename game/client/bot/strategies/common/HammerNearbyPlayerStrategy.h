@@ -8,14 +8,14 @@ public:
 
 	HammerNearbyPlayerStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 	
 	long attackedLastFrame;
 	long attackTime;
 	
-	void attack(CControls* controls, vec2* targetPos);
+	void attack(vec2* targetPos);
 
 };
 

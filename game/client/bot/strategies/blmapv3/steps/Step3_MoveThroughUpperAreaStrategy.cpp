@@ -8,11 +8,11 @@ BotStrategy(client) {
 
 const int Step3_MoveThroughUpperAreaStrategy::X_POS_TO_JUMP[] = {3170, 2800, 2550};
 
-void Step3_MoveThroughUpperAreaStrategy::execute(CControls* controls) {
-	BotUtil::move(controls, MOVE_LEFT);
-	controls->m_InputData.m_Jump = BotUtil::shouldJump(&client->m_PredictedChar.m_Pos, X_POS_TO_JUMP, N_JUMPS);
+void Step3_MoveThroughUpperAreaStrategy::execute() {
+	BotUtil::move(getControls(), MOVE_LEFT);
+	getControls()->m_InputData.m_Jump = BotUtil::shouldJump(&client->m_PredictedChar.m_Pos, X_POS_TO_JUMP, N_JUMPS);
 	if (client->m_PredictedChar.m_Pos.y > 500) {
 		// down in a pothole, jump
-		controls->m_InputData.m_Jump = client->m_PredictedChar.IsGrounded();
+		getControls()->m_InputData.m_Jump = client->m_PredictedChar.IsGrounded();
 	}
 }

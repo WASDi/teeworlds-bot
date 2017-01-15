@@ -6,7 +6,7 @@ pulseStartTime(0),
 jumpedLastFrame(false) {
 }
 
-void JumpWhenStuckMovingStrategy::execute(CControls* controls) {
+void JumpWhenStuckMovingStrategy::execute() {
 	if (isFrozen()) {
 		// "AutoKillWhenFrozenForTooLongStrategy" handles this
 		pulseStartTime = 0;
@@ -14,10 +14,10 @@ void JumpWhenStuckMovingStrategy::execute(CControls* controls) {
 	}
 
 	if (jumpedLastFrame) {
-		controls->m_InputData.m_Jump = 0;
+		getControls()->m_InputData.m_Jump = 0;
 		pulseStartTime = 0;
 		jumpedLastFrame = false;
-	} else if (hasDirectionalInput(controls)) {
+	} else if (hasDirectionalInput()) {
 		long nowMillis = getNowMillis();
 		if (pulseStartTime == 0) {
 			pulseStartTime = nowMillis;
@@ -29,7 +29,7 @@ void JumpWhenStuckMovingStrategy::execute(CControls* controls) {
 				float delta = fabs(posNow.x - posRecently.x) + fabs(posNow.y - posRecently.y);
 				if (delta < 50) {
 					// about the same state two pulses in a row, we think we are stuck
-					controls->m_InputData.m_Jump = 1; //TODO if can't jump, do what?
+					getControls()->m_InputData.m_Jump = 1; //TODO if can't jump, do what?
 					jumpedLastFrame = true;
 				} else {
 					//start new pulse
@@ -43,8 +43,8 @@ void JumpWhenStuckMovingStrategy::execute(CControls* controls) {
 	}
 }
 
-bool JumpWhenStuckMovingStrategy::hasDirectionalInput(CControls* controls) {
-	return controls->m_InputDirectionLeft != 0 ||
-			controls->m_InputDirectionRight != 0;
+bool JumpWhenStuckMovingStrategy::hasDirectionalInput() {
+	return getControls()->m_InputDirectionLeft != 0 ||
+			getControls()->m_InputDirectionRight != 0;
 }
 

@@ -8,7 +8,7 @@ public:
 
 	JumpWhenFallingStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 

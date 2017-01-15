@@ -6,7 +6,7 @@ maxTimeMillis(maxTimeMillis),
 freezeStartTime(0) {
 }
 
-void AutoKillWhenFrozenForTooLongStrategy::execute(CControls* controls) {
+void AutoKillWhenFrozenForTooLongStrategy::execute() {
 	if (isFrozen() && !aboutToUnfreeze()) {
 		long nowMillis = getNowMillis();
 		if (freezeStartTime == 0) {

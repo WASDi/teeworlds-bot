@@ -8,7 +8,7 @@ public:
 
 	Step1_MoveRightUnlessGateOpenStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 

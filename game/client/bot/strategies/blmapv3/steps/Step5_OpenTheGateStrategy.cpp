@@ -18,12 +18,12 @@ const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
 
 #include <stdio.h>
 
-void Step5_OpenTheGateStrategy::execute(CControls* controls) {
+void Step5_OpenTheGateStrategy::execute() {
 	CCharacterCore* player = &client->m_PredictedChar;
 
 	if (state == AVOID_DYING) {
 		if (avoidDyingUntil > getNowMillis()) {
-			maybeAvoidDying(controls);
+			maybeAvoidDying();
 			return;
 		} else {
 			state = IDLE;
@@ -62,9 +62,9 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 	if (state == RETURN_TO_IDLE || !enemy) {
 		nemesisClientId = -1;
 		if (!enemy) {
-			maybeHelpSomeone(controls);
+			maybeHelpSomeone();
 		} else {
-			idle(controls);
+			idle();
 		}
 		return;
 	} else if (state == HELPING) {
@@ -74,44 +74,44 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 	}
 
 	if (state == INIT_ATTACK) {
-		controls->m_MousePos.x = enemy->m_Pos.x - player->m_Pos.x;
-		controls->m_MousePos.y = enemy->m_Pos.y - player->m_Pos.y - 10; // a little above to don't hook ground
-		controls->m_InputData.m_Hook = 1;
-		controls->m_InputData.m_Jump = 1;
+		getControls()->m_MousePos.x = enemy->m_Pos.x - player->m_Pos.x;
+		getControls()->m_MousePos.y = enemy->m_Pos.y - player->m_Pos.y - 10; // a little above to don't hook ground
+		getControls()->m_InputData.m_Hook = 1;
+		getControls()->m_InputData.m_Jump = 1;
 		state = WAIT_FOR_SECOND_JUMP;
 	} else if (state == WAIT_FOR_SECOND_JUMP) {
 		if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
 			state = RETURN_TO_IDLE;
 		}
-		BotUtil::moveTowards(controls, player->m_Pos.x, ATTACK_POS.x);
-		controls->m_InputData.m_Jump = 0;
+		BotUtil::moveTowards(getControls(), player->m_Pos.x, ATTACK_POS.x);
+		getControls()->m_InputData.m_Jump = 0;
 		if (player->m_Vel.y > 0.5) {
-			controls->m_InputData.m_Jump = 1;
+			getControls()->m_InputData.m_Jump = 1;
 			state = HAMMER_READY;
 		}
 	} else if (state == HAMMER_READY) {
-		BotUtil::moveTowards(controls, player->m_Pos.x, ATTACK_POS.x);
+		BotUtil::moveTowards(getControls(), player->m_Pos.x, ATTACK_POS.x);
 		if (player->m_HookState != HOOK_GRABBED || player->IsGrounded()) {
 			state = RETURN_TO_IDLE; // fail, try again
 		} else if (distance(player->m_Pos, enemy->m_Pos) < 55) {
-			controls->m_InputData.m_Fire = 1;
+			getControls()->m_InputData.m_Fire = 1;
 			state = RETURN_TO_IDLE; // hope that enemy went away
 		}
 	} else if (enemyOnGateToggle) {
 		if (BotUtil::atXPosition(player->m_Pos.x, ATTACK_POS.x, TARGET_POS_TOLERANCE) && player->IsGrounded()) {
 			state = INIT_ATTACK;
-			BotUtil::resetInput(controls);
+			BotUtil::resetInput(getControls());
 		} else {
-			BotUtil::resetInput(controls);
-			BotUtil::moveTowardsWithJump(controls, player, &ATTACK_POS, true);
-			maybeAvoidDying(controls);
+			BotUtil::resetInput(getControls());
+			BotUtil::moveTowardsWithJump(getControls(), player, &ATTACK_POS, true);
+			maybeAvoidDying();
 		}
 	} else {
-		idle(controls);
+		idle();
 	}
 }
 
-void Step5_OpenTheGateStrategy::maybeHelpSomeone(CControls* controls) {
+void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 	if (helpStrategy != 0) {
 		if(helpStrategy->isDone()) {
 			delete helpStrategy;
@@ -135,7 +135,7 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone(CControls* controls) {
 			//Frozen in lower left
 		} else if (PushOutFromUpperRight::applicable(&otherPlayer->m_Pos)) {
 			//Frozen in upper right
-			helpStrategy = new PushOutFromUpperRight(controls, player, otherPlayer);
+			helpStrategy = new PushOutFromUpperRight(getControls(), player, otherPlayer);
 			state = HELPING;
 			return;
 		} else if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
@@ -149,34 +149,35 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone(CControls* controls) {
 
 	}
 
-	idle(controls); // Idle if no one to help
+	idle(); // Idle if no one to help
 }
 
-void Step5_OpenTheGateStrategy::idle(CControls* controls) {
+void Step5_OpenTheGateStrategy::idle() {
 	CCharacterCore* player = &client->m_PredictedChar;
 	state = IDLE;
-	BotUtil::resetInput(controls);
+	BotUtil::resetInput(getControls());
 	vec2* idlePos = getDesiredIdlePos();
 	if (BotUtil::atXPosition(player->m_Pos.x, idlePos->x, TARGET_POS_TOLERANCE)) {
-		controls->m_MousePos.x = 0;
-		controls->m_MousePos.y = 100;
-		controls->m_InputData.m_Hook = 1;
+		getControls()->m_MousePos.x = 0;
+		getControls()->m_MousePos.y = 100;
+		getControls()->m_InputData.m_Hook = 1;
 	} else {
-		BotUtil::moveTowardsWithJump(controls, player, idlePos, true);
+		BotUtil::moveTowardsWithJump(getControls(), player, idlePos, true);
 		bool hookedToDesiredPosition = player->m_HookState == HOOK_GRABBED
 				&& fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2
 				&& fabs(player->m_HookPos.y - (idlePos->y + 42)) < TARGET_POS_TOLERANCE * 2;
-		controls->m_InputData.m_Hook = hookedToDesiredPosition;
+		getControls()->m_InputData.m_Hook = hookedToDesiredPosition;
 	}
-	maybeAvoidDying(controls);
+	maybeAvoidDying();
 }
 
 bool Step5_OpenTheGateStrategy::insideGateToggle(vec2* pos) {
 	return pos->x <= 1489 && pos->y < 690;
 }
 
-void Step5_OpenTheGateStrategy::maybeAvoidDying(CControls* controls) {
+void Step5_OpenTheGateStrategy::maybeAvoidDying() {
 	CCharacterCore* player = &client->m_PredictedChar;
+	CControls* controls = getControls();
 	vec2* currPos = &player->m_Pos;
 	vec2 expectedPos = vec2(currPos->x + player->m_Vel.x * 5,
 			currPos->y + player->m_Vel.y * 5);
@@ -188,26 +189,26 @@ void Step5_OpenTheGateStrategy::maybeAvoidDying(CControls* controls) {
 		// Upper right
 		BotUtil::move(controls, MOVE_LEFT);
 		// Hook down and a little left
-		controls->m_MousePos.x = -10;
-		controls->m_MousePos.y = 100;
-		controls->m_InputData.m_Hook = 1;
+		getControls()->m_MousePos.x = -10;
+		getControls()->m_MousePos.y = 100;
+		getControls()->m_InputData.m_Hook = 1;
 		toggleAvoidDying();
 	} else if (expectedPos.x < 1440) {
 		// Lower left
 		// Hook and move right, maybe jump
 		BotUtil::move(controls, MOVE_RIGHT);
-		controls->m_InputData.m_Jump = currPos->y > 689; // fell of the edge
-		controls->m_MousePos.x = 100;
-		controls->m_MousePos.y = 0;
-		controls->m_InputData.m_Hook = 1;
+		getControls()->m_InputData.m_Jump = currPos->y > 689; // fell of the edge
+		getControls()->m_MousePos.x = 100;
+		getControls()->m_MousePos.y = 0;
+		getControls()->m_InputData.m_Hook = 1;
 		toggleAvoidDying();
 	} else if (Blmapv3StageResolver::insideChamberFreeze(&expectedPos)) {
 		// Upper left
 		BotUtil::move(controls, MOVE_RIGHT);
 		// Hook up right, because down is too far
-		controls->m_MousePos.x = 100;
-		controls->m_MousePos.y = -100;
-		controls->m_InputData.m_Hook = 1;
+		getControls()->m_MousePos.x = 100;
+		getControls()->m_MousePos.y = -100;
+		getControls()->m_InputData.m_Hook = 1;
 		toggleAvoidDying();
 	}
 }

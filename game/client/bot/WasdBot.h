@@ -10,7 +10,7 @@ public:
 
 	WasdBot(CGameClient* gameClient);
 
-	void injectInput(CControls* controls);
+	void injectInput();
 
 	bool toggleEnabled();
 	bool toggleDebug();

@@ -7,7 +7,7 @@ class Step2_GoFromFightingAreaToUpperAreaStrategy : public BotStrategy {
 public:
 	Step2_GoFromFightingAreaToUpperAreaStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 

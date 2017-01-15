@@ -7,7 +7,7 @@ class Step4_JumpUpToTheChamberStrategy : public BotStrategy {
 public:
 	Step4_JumpUpToTheChamberStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 

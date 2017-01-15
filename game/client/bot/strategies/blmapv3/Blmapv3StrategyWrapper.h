@@ -9,7 +9,7 @@ public:
 	
 	Blmapv3StrategyWrapper(CGameClient* client);
 	
-	void execute(CControls* controls);
+	void execute();
 
 private:
 

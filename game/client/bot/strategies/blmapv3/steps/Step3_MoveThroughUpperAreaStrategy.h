@@ -7,7 +7,7 @@ class Step3_MoveThroughUpperAreaStrategy : public BotStrategy {
 public:
 	Step3_MoveThroughUpperAreaStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 	

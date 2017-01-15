@@ -3,7 +3,7 @@
 StickToXPositionStrategy::StickToXPositionStrategy(CGameClient* client, float targetX) : BotStrategy(client), targetX(targetX) {
 }
 
-void StickToXPositionStrategy::execute(CControls* controls) {
+void StickToXPositionStrategy::execute() {
 	CCharacterCore* player = &client->m_PredictedChar;
 
 	const float sensitivity = 4;
@@ -17,13 +17,13 @@ void StickToXPositionStrategy::execute(CControls* controls) {
 		return;
 	}
 
-	controls->m_InputDirectionRight = 0;
-	controls->m_InputDirectionLeft = 0;
+	getControls()->m_InputDirectionRight = 0;
+	getControls()->m_InputDirectionLeft = 0;
 
 	if (expectedNextDelta < -sensitivity) {
-		controls->m_InputDirectionRight = 1;
+		getControls()->m_InputDirectionRight = 1;
 	} else if (expectedNextDelta > sensitivity) {
-		controls->m_InputDirectionLeft = 1;
+		getControls()->m_InputDirectionLeft = 1;
 	}
 
 }

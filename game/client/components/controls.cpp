@@ -141,7 +141,7 @@ int CControls::SnapInput(int *pData, WasdBot *wasdBot)
 	}
 	else
 	{
-		wasdBot->injectInput(this);
+		wasdBot->injectInput();
 		m_InputData.m_TargetX = (int)m_MousePos.x;
 		m_InputData.m_TargetY = (int)m_MousePos.y;
 		if(!m_InputData.m_TargetX && !m_InputData.m_TargetY)

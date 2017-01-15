@@ -10,11 +10,11 @@ public:
 
 	JumpWhenStuckMovingStrategy(CGameClient* client);
 
-	void execute(CControls* controls);
+	void execute();
 
 private:
 
-	bool hasDirectionalInput(CControls* controls);
+	bool hasDirectionalInput();
 
 	long pulseStartTime;
 	vec2 posRecently;

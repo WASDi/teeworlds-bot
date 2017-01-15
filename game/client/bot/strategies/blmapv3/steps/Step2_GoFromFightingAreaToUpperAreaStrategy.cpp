@@ -6,7 +6,7 @@ Step2_GoFromFightingAreaToUpperAreaStrategy::Step2_GoFromFightingAreaToUpperArea
 BotStrategy(client) {
 }
 
-void Step2_GoFromFightingAreaToUpperAreaStrategy::execute(CControls* controls) {
+void Step2_GoFromFightingAreaToUpperAreaStrategy::execute() {
 	CCharacterCore* player = &client->m_PredictedChar;
 	vec2 pos = player->m_Pos;
 
@@ -25,15 +25,15 @@ void Step2_GoFromFightingAreaToUpperAreaStrategy::execute(CControls* controls) {
 
 	if (hookedToDesiredSpot) {
 		if (inTheMiddleY) {
-			BotUtil::moveTowards(controls, pos.x, CENTER_X); // move to center
+			BotUtil::moveTowards(getControls(), pos.x, CENTER_X); // move to center
 		} else if (rightFromCenter ? pos.x > CENTER_X + 180 : pos.x < CENTER_X - 180) {
 			//near the upper traps, escape
-			controls->m_InputData.m_Hook = 0;
-			BotUtil::moveAwayFrom(controls, pos.x, CENTER_X);
+			getControls()->m_InputData.m_Hook = 0;
+			BotUtil::moveAwayFrom(getControls(), pos.x, CENTER_X);
 		}
 	} else {
 		if (player->m_HookState == HOOK_RETRACTED) {
-			controls->m_InputData.m_Hook = 0;
+			getControls()->m_InputData.m_Hook = 0;
 		}
 		int targetX = CENTER_X + 210 * inv;
 		if (inTheMiddleY) {
@@ -41,20 +41,20 @@ void Step2_GoFromFightingAreaToUpperAreaStrategy::execute(CControls* controls) {
 		}
 		float absDelta = fabs(pos.x - targetX);
 		if (absDelta > 5) {
-			BotUtil::moveTowards(controls, pos.x, targetX);
+			BotUtil::moveTowards(getControls(), pos.x, targetX);
 		} else {
-			BotUtil::move(controls, DONT_MOVE);
+			BotUtil::move(getControls(), DONT_MOVE);
 			// aim hook up and a little outwards
-			controls->m_MousePos.x = 10 * inv;
-			controls->m_MousePos.y = -100;
+			getControls()->m_MousePos.x = 10 * inv;
+			getControls()->m_MousePos.y = -100;
 
 			// maybe jump
 			bool canDoubleJump = !(player->m_Jumped & 2);
-			controls->m_InputData.m_Jump = pos.y > 850 && ((canDoubleJump && player->m_Vel.y > 5) || player->IsGrounded());
+			getControls()->m_InputData.m_Jump = pos.y > 850 && ((canDoubleJump && player->m_Vel.y > 5) || player->IsGrounded());
 
 			if (inTheMiddleY && pos.y <= 900) {
 				// HOOK
-				controls->m_InputData.m_Hook = 1;
+				getControls()->m_InputData.m_Hook = 1;
 			}
 		}
 	}

@@ -16,9 +16,9 @@ Blmapv3StrategyWrapper::Blmapv3StrategyWrapper(CGameClient* client) : BotStrateg
 	stages[4] = new Step5_OpenTheGateStrategy(client);
 }
 
-void Blmapv3StrategyWrapper::execute(CControls* controls) {
+void Blmapv3StrategyWrapper::execute() {
 	if (isFrozen()) {
-		BotUtil::resetInput(controls);
+		BotUtil::resetInput(getControls());
 		return;
 	}
 
@@ -29,12 +29,12 @@ void Blmapv3StrategyWrapper::execute(CControls* controls) {
 	}
 	int stage = Blmapv3StageResolver::resolveStage(pos);
 	if (stage != lastStage) {
-		BotUtil::resetInput(controls);
+		BotUtil::resetInput(getControls());
 	}
 
 	if (stage > 0 && stage <= NUM_STAGES) {
 		// execute stage from 1 to NUM_STAGES
-		stages[stage - 1]->execute(controls);
+		stages[stage - 1]->execute();
 	}
 
 	lastStage = stage;

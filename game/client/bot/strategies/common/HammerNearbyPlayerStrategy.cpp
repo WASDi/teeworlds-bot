@@ -6,11 +6,9 @@ attackedLastFrame(false),
 attackTime(0) {
 }
 
-#include <stdio.h>
-
-void HammerNearbyPlayerStrategy::execute(CControls* controls) {
+void HammerNearbyPlayerStrategy::execute() {
 	if (attackedLastFrame) {
-		controls->m_InputData.m_Fire = 0;
+		getControls()->m_InputData.m_Fire = 0;
 		attackedLastFrame = false;
 		return;
 	}
@@ -27,19 +25,19 @@ void HammerNearbyPlayerStrategy::execute(CControls* controls) {
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
 		float distanceToOtherPlayer = distance(me->m_Pos, otherPlayer->m_Pos);
 		if (distanceToOtherPlayer < 50) {
-			attack(controls, &otherPlayer->m_Pos);
+			attack(&otherPlayer->m_Pos);
 			return;
 		}
 	}
 
 }
 
-void HammerNearbyPlayerStrategy::attack(CControls* controls, vec2* targetPos) {
+void HammerNearbyPlayerStrategy::attack(vec2* targetPos) {
 	vec2* myPos = &client->m_PredictedChar.m_Pos;
-	controls->m_InputData.m_WantedWeapon = 1; //hammer
-	controls->m_InputData.m_Fire = 1;
-	controls->m_MousePos.x = targetPos->x - myPos->x;
-	controls->m_MousePos.y = targetPos->y - myPos->y;
+	getControls()->m_InputData.m_WantedWeapon = 1; //hammer
+	getControls()->m_InputData.m_Fire = 1;
+	getControls()->m_MousePos.x = targetPos->x - myPos->x;
+	getControls()->m_MousePos.y = targetPos->y - myPos->y;
 	attackedLastFrame = true;
 	attackTime = getNowMillis();
 }
