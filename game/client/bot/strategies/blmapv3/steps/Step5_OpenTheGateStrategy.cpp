@@ -2,12 +2,14 @@
 #include "game/client/bot/strategies/blmapv3/Blmapv3StageResolver.h"
 #include "game/client/bot/BotUtil.h"
 
+#include "step5help/PushOutFromUpperRight.h"
+
 Step5_OpenTheGateStrategy::Step5_OpenTheGateStrategy(CGameClient* client) :
 BotStrategy(client),
 nemesisClientId(-1),
 state(IDLE),
-avoidDyingUntil(0) {
-	extras = Step5Extras();
+avoidDyingUntil(0),
+helpStrategy(0) {
 }
 
 const vec2 Step5_OpenTheGateStrategy::IDLE_POS1 = vec2(1520 + 8, 657);
@@ -65,6 +67,10 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 			idle(controls);
 		}
 		return;
+	} else if (state == HELPING) {
+		// we were helping but found a new enemy, remove help strategy
+		delete helpStrategy;
+		helpStrategy = 0;
 	}
 
 	if (state == INIT_ATTACK) {
@@ -101,12 +107,24 @@ void Step5_OpenTheGateStrategy::execute(CControls* controls) {
 			maybeAvoidDying(controls);
 		}
 	} else {
-
 		idle(controls);
 	}
 }
 
 void Step5_OpenTheGateStrategy::maybeHelpSomeone(CControls* controls) {
+	if (helpStrategy != 0) {
+		if(helpStrategy->isDone()) {
+			delete helpStrategy;
+			helpStrategy = 0;
+			state = RETURN_TO_IDLE;
+		}
+		else {
+			helpStrategy->execute();
+			state = HELPING;
+		}
+		return;
+	}
+
 	CCharacterCore* player = &client->m_PredictedChar;
 	for (int i = 0; i < MAX_CLIENTS; i++) {
 		if (i == client->m_Snap.m_LocalClientID || !client->m_Snap.m_aCharacters[i].m_Active)
@@ -115,14 +133,16 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone(CControls* controls) {
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
 		if (otherPlayer->m_Pos.x >= 1390 && otherPlayer->m_Pos.x <= 1424 && otherPlayer->m_Pos.y == 785) {
 			//Frozen in lower left
-		} else if (extras.pushOutFromUpperRight.applicable(&otherPlayer->m_Pos)) {
+		} else if (PushOutFromUpperRight::applicable(&otherPlayer->m_Pos)) {
 			//Frozen in upper right
-			extras.pushOutFromUpperRight.execute(controls, player, otherPlayer);
+			helpStrategy = new PushOutFromUpperRight(controls, player, otherPlayer);
+			state = HELPING;
 			return;
 		} else if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
 			bool frozen = otherPlayer->m_Input.m_WantedWeapon == WEAPON_NINJA;
+			bool hooked = otherPlayer->m_HookState == HOOK_GRABBED;
 			bool idle = false; // TODO resolve if no input for X seconds
-			if (frozen || idle) {
+			if (frozen || (!hooked && idle)) {
 				// TODO: throw out
 			}
 		}

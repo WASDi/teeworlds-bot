@@ -2,7 +2,11 @@
 
 #include "../../../../BotUtil.h"
 
-PushOutFromUpperRight::PushOutFromUpperRight() {
+PushOutFromUpperRight::PushOutFromUpperRight(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
+Step5HelpStrategy(),
+controls(controls),
+player(player),
+other(other) {
 }
 
 bool PushOutFromUpperRight::applicable(vec2* pos) {
@@ -12,7 +16,7 @@ bool PushOutFromUpperRight::applicable(vec2* pos) {
 const vec2 PushOutFromUpperRight::TARGET = vec2(1809, 529);
 const vec2 PushOutFromUpperRight::PRE_TARGET = vec2(TARGET.x - 48, TARGET.y);
 
-void PushOutFromUpperRight::execute(CControls* controls, CCharacterCore* player, CCharacterCore* other) {
+void PushOutFromUpperRight::execute() {
 	if (player->m_Pos.x == TARGET.x) {
 		if (player->m_Pos.y == TARGET.y) {
 			controls->m_MousePos.x = 200;
@@ -28,6 +32,7 @@ void PushOutFromUpperRight::execute(CControls* controls, CCharacterCore* player,
 			controls->m_MousePos.x = 100;
 			controls->m_MousePos.y = 0;
 			controls->m_InputData.m_Fire = 1;
+			done = true;
 		} else {
 			//in air, not high enough
 			controls->m_InputData.m_Jump = 0;
