@@ -13,7 +13,7 @@ bool PushOutFromUpperRight::applicable(vec2* pos) {
 const vec2 PushOutFromUpperRight::TARGET = vec2(1809, 529);
 const vec2 PushOutFromUpperRight::PRE_TARGET = vec2(TARGET.x - 48, TARGET.y);
 
-void PushOutFromUpperRight::execute() {
+void PushOutFromUpperRight::executeInternal() {
 	if (player->m_Pos.x == TARGET.x) {
 		if (player->m_Pos.y == TARGET.y) {
 			controls->m_MousePos.x = 200;

@@ -10,7 +10,7 @@ public:
 
 	static bool applicable(vec2* pos);
 
-	void execute();
+	void executeInternal();
 
 private:
 

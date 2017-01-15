@@ -10,6 +10,16 @@ other(other) {
 Step5HelpStrategy::~Step5HelpStrategy() {
 }
 
+void Step5HelpStrategy::execute() {
+	if (isDone()) {
+		return;
+	} else if (/* other left game TODO*/0) {
+		done = true;
+		return;
+	}
+	executeInternal();
+}
+
 bool Step5HelpStrategy::isDone() {
 	return done;
 }
