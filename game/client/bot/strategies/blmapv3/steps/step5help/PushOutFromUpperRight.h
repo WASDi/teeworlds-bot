@@ -1,9 +1,6 @@
 #ifndef PUSHOUTFROMUPPERRIGHT_H
 #define PUSHOUTFROMUPPERRIGHT_H
 
-#include <game/gamecore.h>
-#include <game/client/components/controls.h>
-
 #include "Step5HelpStrategy.h"
 
 class PushOutFromUpperRight : public Step5HelpStrategy {
@@ -19,10 +16,6 @@ private:
 	
 	const static vec2 TARGET;
 	const static vec2 PRE_TARGET;
-	
-	CControls* controls;
-	CCharacterCore* player;
-	CCharacterCore* other;
 
 };
 

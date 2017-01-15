@@ -3,10 +3,7 @@
 #include "../../../../BotUtil.h"
 
 PushOutFromUpperRight::PushOutFromUpperRight(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
-Step5HelpStrategy(),
-controls(controls),
-player(player),
-other(other) {
+Step5HelpStrategy(controls, player, other) {
 }
 
 bool PushOutFromUpperRight::applicable(vec2* pos) {
