@@ -17,6 +17,12 @@ void Step5HelpStrategy::execute() {
 		done = true;
 		return;
 	}
+	else if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
+		// grabbed wall, not supposed to happen when helping
+		controls->m_InputData.m_Hook = 0;
+		done = true;
+		return;
+	}
 	executeInternal();
 }
 

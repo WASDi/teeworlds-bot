@@ -16,13 +16,6 @@ const vec2 DragOutFromLowerLeft::PRE_START_POS = vec2(1553, 657);
 const vec2 DragOutFromLowerLeft::START_POS = vec2(1500, 657);
 
 void DragOutFromLowerLeft::executeInternal() {
-	if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
-		// grabbed wall, not supposed to happen
-		controls->m_InputData.m_Hook = 0;
-		done = true;
-		return;
-	}
-
 	bool releaseEarly = other->m_Pos.y < Y_MIN + 32 && other->m_Pos.x < LEFT_BOUNDARY + 24;
 	if (releaseEarly || other->m_Pos.y < Y_MIN || other->m_Pos.x > RIGHT_BOUNDARY) {
 		controls->m_InputData.m_Hook = 0;

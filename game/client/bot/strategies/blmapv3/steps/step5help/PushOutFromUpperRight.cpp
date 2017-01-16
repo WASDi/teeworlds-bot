@@ -14,7 +14,7 @@ const vec2 PushOutFromUpperRight::TARGET = vec2(1809, 529);
 const vec2 PushOutFromUpperRight::PRE_TARGET = vec2(TARGET.x - 48, TARGET.y);
 
 void PushOutFromUpperRight::executeInternal() {
-	if(!applicable(&other->m_Pos)) {
+	if (!applicable(&other->m_Pos)) {
 		done = true;
 		return;
 	}

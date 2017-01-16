@@ -25,5 +25,7 @@ void Step4_JumpUpToTheChamberStrategy::execute() {
 	} else if (player->m_HookState != HOOK_GRABBED) {
 		//TODO if in this state for too long, move left instead
 		BotUtil::moveTowardsWithJump(getControls(), player, &TARGET_POS, false);
+	} else if (player->m_HookState == HOOK_GRABBED) {
+		// What to do if we are hooked for too long and keep moving right?
 	}
 }
