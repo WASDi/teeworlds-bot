@@ -20,6 +20,8 @@ protected:
 	long getNowMillis();
 	
 	CControls* getControls();
+	
+	CCharacterCore* getPlayerHookingMe();
 
 };
 

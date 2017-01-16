@@ -40,7 +40,7 @@ void Step5_OpenTheGateStrategy::execute() {
 
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
 		if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
-			if(otherPlayer->m_Input.m_WantedWeapon == WEAPON_NINJA && otherPlayer->m_Pos.x <= 1425) {
+			if (otherPlayer->m_Input.m_WantedWeapon == WEAPON_NINJA && otherPlayer->m_Pos.x <= 1425) {
 				// frozen and not on the platform
 				continue;
 			}
@@ -169,6 +169,10 @@ void Step5_OpenTheGateStrategy::idle() {
 		getControls()->m_MousePos.x = 0;
 		getControls()->m_MousePos.y = 100;
 		getControls()->m_InputData.m_Hook = 1;
+		CCharacterCore* playerHookingMe = getPlayerHookingMe();
+		if (playerHookingMe && distance(player->m_Pos, playerHookingMe->m_Pos) < 100) {
+			BotUtil::move(getControls(), MOVE_RIGHT);
+		}
 	} else {
 		BotUtil::moveTowardsWithJump(getControls(), player, idlePos, true);
 		bool hookedToDesiredPosition = player->m_HookState == HOOK_GRABBED
