@@ -40,6 +40,10 @@ void Step5_OpenTheGateStrategy::execute() {
 
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
 		if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
+			if(otherPlayer->m_Input.m_WantedWeapon == WEAPON_NINJA && otherPlayer->m_Pos.x <= 1425) {
+				// frozen and not on the platform
+				continue;
+			}
 			bool otherPlayerOnGateToggle = insideGateToggle(&otherPlayer->m_Pos);
 			bool foundNewEnemy = false;
 			if (!enemy) {
@@ -125,6 +129,7 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 		return;
 	}
 
+	// TODO prioritize closest helpable player? Maybe not important
 	CCharacterCore* player = &client->m_PredictedChar;
 	for (int i = 0; i < MAX_CLIENTS; i++) {
 		if (i == client->m_Snap.m_LocalClientID || !client->m_Snap.m_aCharacters[i].m_Active)

@@ -23,7 +23,7 @@ void DragOutFromLowerLeft::executeInternal() {
 		return;
 	}
 
-	bool releaseEarly = other->m_Pos.y < Y_MIN + 32 && other->m_Pos.x < LEFT_BOUNDARY + 16;
+	bool releaseEarly = other->m_Pos.y < Y_MIN + 32 && other->m_Pos.x < LEFT_BOUNDARY + 24;
 	if (releaseEarly || other->m_Pos.y < Y_MIN || other->m_Pos.x > RIGHT_BOUNDARY) {
 		controls->m_InputData.m_Hook = 0;
 		done = true;
