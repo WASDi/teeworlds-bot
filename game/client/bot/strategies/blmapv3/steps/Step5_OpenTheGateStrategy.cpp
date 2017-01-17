@@ -89,7 +89,7 @@ void Step5_OpenTheGateStrategy::execute() {
 		if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
 			state = RETURN_TO_IDLE;
 		}
-		BotUtil::moveTowards(getControls(), player->m_Pos.x, ATTACK_POS.x);
+		BotUtil::moveTowards(getControls(), player->m_Pos.x, ATTACK_POS.x); // TODO another attack pos or something if occupied
 		getControls()->m_InputData.m_Jump = 0;
 		if (player->m_Vel.y > 0.5) {
 			getControls()->m_InputData.m_Jump = 1;
@@ -122,6 +122,7 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 		if (helpStrategy->isDone()) {
 			delete helpStrategy;
 			helpStrategy = 0;
+			BotUtil::resetInput(getControls());
 			state = RETURN_TO_IDLE;
 		} else {
 			helpStrategy->execute();
@@ -174,11 +175,10 @@ void Step5_OpenTheGateStrategy::idle() {
 		getControls()->m_InputData.m_Hook = 1;
 	} else {
 		BotUtil::moveTowardsWithJump(getControls(), player, idlePos, true);
-		bool hookedToDesiredPosition = player->m_HookState == HOOK_GRABBED
-				&& fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2
+		bool hookIsAtDesiredPosition = fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2
 				&& fabs(player->m_HookPos.y - (idlePos->y + 42)) < TARGET_POS_TOLERANCE * 2;
-		if (hookedToDesiredPosition) {
-			getControls()->m_InputData.m_Hook = 1;
+		if (player->m_HookState == HOOK_GRABBED) {
+			getControls()->m_InputData.m_Hook = hookIsAtDesiredPosition;
 		} else if (player->m_Pos.y < 600) {
 			// At height suitable for hooking down at idlePos
 			getControls()->m_MousePos.x = idlePos->x - player->m_Pos.x;
