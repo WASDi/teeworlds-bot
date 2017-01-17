@@ -1,7 +1,6 @@
 #include "DragOutFromLowerLeft.h"
 
 #include "../../../../BotUtil.h"
-#include "base/tl/range.h"
 
 DragOutFromLowerLeft::DragOutFromLowerLeft(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
 Step5HelpStrategy(controls, player, other),
@@ -16,13 +15,24 @@ const vec2 DragOutFromLowerLeft::PRE_START_POS = vec2(1553, 657);
 const vec2 DragOutFromLowerLeft::START_POS = vec2(1500, 657);
 
 void DragOutFromLowerLeft::executeInternal() {
-	bool releaseEarly = other->m_Pos.y < Y_MIN + 32 && other->m_Pos.x < LEFT_BOUNDARY + 24;
+	bool releaseEarly = other->m_Pos.x < LEFT_BOUNDARY + 20 && other->m_Pos.y < Y_MIN + 20;
 	if (releaseEarly || other->m_Pos.y < Y_MIN || other->m_Pos.x > RIGHT_BOUNDARY) {
 		controls->m_InputData.m_Hook = 0;
 		done = true;
 	}
 
+	if (state <= JUMPED && !applicable(&other->m_Pos)) {
+		// other player respawned or was moved away
+		done = true;
+		return;
+	}
+
 	if (state == PRE_INIT) {
+		if (player->m_Pos.y > 657) {
+			// fell down
+			done = true;
+			return;
+		}
 		if (player->m_Pos == PRE_START_POS) {
 			state = MOVE_TO_START_POS;
 		} else {
@@ -41,11 +51,6 @@ void DragOutFromLowerLeft::executeInternal() {
 		}
 	} else if (state == JUMPED) {
 		controls->m_InputData.m_Jump = 0;
-		if (!applicable(&other->m_Pos)) {
-			// other player respawned or was moved away
-			done = true;
-			return;
-		}
 
 		//realistic-looking aim
 		controls->m_MousePos.x = -10;
