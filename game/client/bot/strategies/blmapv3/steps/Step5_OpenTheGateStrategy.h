@@ -18,7 +18,8 @@ private:
 	const static vec2 IDLE_POS1;
 	const static vec2 IDLE_POS2;
 	const static long IDLE_POS_CYCLE_TIME = 10000;
-	vec2* getDesiredIdlePos();
+	const static vec2 DANGEROUS_HOOKER_POS;
+	const vec2* getDesiredIdlePos();
 
 	const static vec2 ATTACK_POS;
 	const static int TARGET_POS_TOLERANCE = 16;

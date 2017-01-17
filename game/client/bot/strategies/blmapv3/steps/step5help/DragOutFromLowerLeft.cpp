@@ -41,13 +41,16 @@ void DragOutFromLowerLeft::executeInternal() {
 		}
 	} else if (state == JUMPED) {
 		controls->m_InputData.m_Jump = 0;
-		if (player->m_Vel.y > 0) {
-			if (!applicable(&other->m_Pos)) {
-				// other player respawned or was moved away
-				done = true;
-				return;
-			}
+		if (!applicable(&other->m_Pos)) {
+			// other player respawned or was moved away
+			done = true;
+			return;
+		}
 
+		//realistic-looking aim
+		controls->m_MousePos.x = -10;
+		controls->m_MousePos.y = 20;
+		if (player->m_Vel.y > 0) {
 			if (other->m_Pos.x > DANGEROUS_THRESHOLD) {
 				state = DANGEROUS_FALLING;
 			} else {

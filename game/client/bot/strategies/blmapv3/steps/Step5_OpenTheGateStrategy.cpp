@@ -16,6 +16,7 @@ helpStrategy(0) {
 const vec2 Step5_OpenTheGateStrategy::IDLE_POS1 = vec2(1520 + 8, 657);
 const vec2 Step5_OpenTheGateStrategy::IDLE_POS2 = vec2(1584, 625);
 const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
+const vec2 Step5_OpenTheGateStrategy::DANGEROUS_HOOKER_POS = vec2(1580, 450);
 
 #include <stdio.h>
 
@@ -160,25 +161,32 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 	idle(); // Idle if no one to help
 }
 
+// TODO move idle-logic to own class
+
 void Step5_OpenTheGateStrategy::idle() {
 	CCharacterCore* player = &client->m_PredictedChar;
 	state = IDLE;
 	BotUtil::resetInput(getControls());
-	vec2* idlePos = getDesiredIdlePos();
+	const vec2* idlePos = getDesiredIdlePos();
 	if (BotUtil::atXPosition(player->m_Pos.x, idlePos->x, TARGET_POS_TOLERANCE)) {
 		getControls()->m_MousePos.x = 0;
 		getControls()->m_MousePos.y = 100;
 		getControls()->m_InputData.m_Hook = 1;
-		CCharacterCore* playerHookingMe = getPlayerHookingMe();
-		if (playerHookingMe && distance(player->m_Pos, playerHookingMe->m_Pos) < 100) {
-			BotUtil::move(getControls(), MOVE_RIGHT);
-		}
 	} else {
 		BotUtil::moveTowardsWithJump(getControls(), player, idlePos, true);
 		bool hookedToDesiredPosition = player->m_HookState == HOOK_GRABBED
 				&& fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2
 				&& fabs(player->m_HookPos.y - (idlePos->y + 42)) < TARGET_POS_TOLERANCE * 2;
-		getControls()->m_InputData.m_Hook = hookedToDesiredPosition;
+		if (hookedToDesiredPosition) {
+			getControls()->m_InputData.m_Hook = 1;
+		} else if (player->m_Pos.y < 600) {
+			// At height suitable for hooking down at idlePos
+			getControls()->m_MousePos.x = idlePos->x - player->m_Pos.x;
+			getControls()->m_MousePos.y = idlePos->y - player->m_Pos.y + 32;
+			getControls()->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED;
+		} else {
+			getControls()->m_InputData.m_Hook = 0;
+		}
 	}
 	maybeAvoidDying();
 }
@@ -233,8 +241,11 @@ void Step5_OpenTheGateStrategy::toggleAvoidDying() {
 	avoidDyingUntil = getNowMillis() + 300;
 }
 
-vec2* Step5_OpenTheGateStrategy::getDesiredIdlePos() {
-	// TODO instead of cycling with time, return pos1 if another player is able to hook from outside
-	return (vec2*) (getNowMillis() % (IDLE_POS_CYCLE_TIME * 2) > IDLE_POS_CYCLE_TIME ?
-			&IDLE_POS1 : &IDLE_POS2);
+const vec2* Step5_OpenTheGateStrategy::getDesiredIdlePos() {
+	CCharacterCore* playerHookingMe = getPlayerHookingMe();
+	if (playerHookingMe && distance(DANGEROUS_HOOKER_POS, playerHookingMe->m_Pos) < 100) {
+		return &IDLE_POS2;
+	}
+	return getNowMillis() % (IDLE_POS_CYCLE_TIME * 2) > IDLE_POS_CYCLE_TIME ?
+			&IDLE_POS1 : &IDLE_POS2;
 }
