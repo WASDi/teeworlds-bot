@@ -170,9 +170,11 @@ void Step5_OpenTheGateStrategy::idle() {
 	BotUtil::resetInput(getControls());
 	const vec2* idlePos = getDesiredIdlePos();
 	if (BotUtil::atXPosition(player->m_Pos.x, idlePos->x, TARGET_POS_TOLERANCE)) {
-		getControls()->m_MousePos.x = 0;
-		getControls()->m_MousePos.y = 100;
-		getControls()->m_InputData.m_Hook = 1;
+		if (player->m_HookState == HOOK_RETRACTED || player->m_HookState == HOOK_IDLE) {
+			getControls()->m_MousePos.x = 0;
+			getControls()->m_MousePos.y = 100;
+			getControls()->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED;
+		}
 	} else {
 		BotUtil::moveTowardsWithJump(getControls(), player, idlePos, true);
 		bool hookIsAtDesiredPosition = fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2

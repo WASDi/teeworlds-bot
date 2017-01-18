@@ -28,11 +28,6 @@ void DragOutFromLowerLeft::executeInternal() {
 	}
 
 	if (state == PRE_INIT) {
-		if (player->m_Pos.y > 657) {
-			// fell down
-			done = true;
-			return;
-		}
 		if (player->m_Pos == PRE_START_POS) {
 			state = MOVE_TO_START_POS;
 		} else {
