@@ -22,7 +22,7 @@ private:
 	const vec2* getDesiredIdlePos();
 
 	const static vec2 ATTACK_POS;
-	const static int TARGET_POS_TOLERANCE = 20;
+	const static int TARGET_POS_TOLERANCE = 16;
 
 	void idle();
 	void maybeHelpSomeone();

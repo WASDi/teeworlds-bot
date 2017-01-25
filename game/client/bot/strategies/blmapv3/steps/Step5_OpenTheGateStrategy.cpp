@@ -162,32 +162,29 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 	idle(); // Idle if no one to help
 }
 
-// TODO move idle-logic to own class
-
 void Step5_OpenTheGateStrategy::idle() {
 	CCharacterCore* player = &client->m_PredictedChar;
 	state = IDLE;
 	BotUtil::resetInput(getControls());
 	const vec2* idlePos = getDesiredIdlePos();
 	if (BotUtil::atXPosition(player->m_Pos.x, idlePos->x, TARGET_POS_TOLERANCE)) {
-		if (player->m_HookState == HOOK_RETRACTED || player->m_HookState == HOOK_IDLE) {
-			getControls()->m_MousePos.x = 0;
-			getControls()->m_MousePos.y = 100;
-			getControls()->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED;
-		}
-	} else {
-		BotUtil::moveTowardsWithJump(getControls(), player, idlePos, true);
-		bool hookIsAtDesiredPosition = fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2
-				&& fabs(player->m_HookPos.y - (idlePos->y + 42)) < TARGET_POS_TOLERANCE * 2;
-		if (player->m_HookState == HOOK_GRABBED) {
-			getControls()->m_InputData.m_Hook = hookIsAtDesiredPosition;
-		} else if (player->m_Pos.y < 600) {
-			// At height suitable for hooking down at idlePos
+		if (player->m_HookState != HOOK_GRABBED) {
 			getControls()->m_MousePos.x = idlePos->x - player->m_Pos.x;
 			getControls()->m_MousePos.y = idlePos->y - player->m_Pos.y + 32;
-			getControls()->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED;
+		}
+		getControls()->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED;
+	} else {
+		BotUtil::moveTowardsWithJump(getControls(), player, idlePos, true);
+		if (player->m_HookState == HOOK_GRABBED) {
+			bool hookIsAtDesiredPosition = fabs(player->m_HookPos.x - idlePos->x) < TARGET_POS_TOLERANCE * 2
+					&& fabs(player->m_HookPos.y - idlePos->y) < TARGET_POS_TOLERANCE * 4;
+			getControls()->m_InputData.m_Hook = hookIsAtDesiredPosition;
 		} else {
-			getControls()->m_InputData.m_Hook = 0;
+			if (player->m_HookState != HOOK_GRABBED) {
+				getControls()->m_MousePos.x = idlePos->x - player->m_Pos.x;
+				getControls()->m_MousePos.y = idlePos->y - player->m_Pos.y + 32;
+			}
+			getControls()->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED;
 		}
 	}
 	maybeAvoidDying();
@@ -201,8 +198,8 @@ void Step5_OpenTheGateStrategy::maybeAvoidDying() {
 	CCharacterCore* player = &client->m_PredictedChar;
 	CControls* controls = getControls();
 	vec2* currPos = &player->m_Pos;
-	vec2 expectedPos = vec2(currPos->x + player->m_Vel.x * 5,
-			currPos->y + player->m_Vel.y * 5);
+	vec2 expectedPos = vec2(currPos->x + player->m_Vel.x * 4,
+			currPos->y + player->m_Vel.y * 4);
 
 	// TODO if I am hooking AND I am hooked THEN remain hooking?
 	// TODO use intersect to try not grab players when hooking?
@@ -227,9 +224,9 @@ void Step5_OpenTheGateStrategy::maybeAvoidDying() {
 	} else if (Blmapv3StageResolver::insideChamberFreeze(&expectedPos)) {
 		// Upper left
 		BotUtil::move(controls, MOVE_RIGHT);
-		// Hook up right, because down is too far
+		// Hook down right
 		getControls()->m_MousePos.x = 100;
-		getControls()->m_MousePos.y = -100;
+		getControls()->m_MousePos.y = 100;
 		getControls()->m_InputData.m_Hook = 1;
 		toggleAvoidDying();
 	}
