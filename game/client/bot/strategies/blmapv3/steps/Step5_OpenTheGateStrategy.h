@@ -24,7 +24,8 @@ private:
 	const static int TARGET_POS_TOLERANCE = 16;
 
 	void idle();
-	void maybeHelpSomeone();
+	void maybeHelpSomeoneOrElseIdle();
+	void enterHelpState(BotSubStrategy* newHelpStrategy);
 
 	bool insideGateToggle(vec2* pos);
 

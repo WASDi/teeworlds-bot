@@ -70,18 +70,11 @@ void Step5_OpenTheGateStrategy::execute() {
 	if (state == RETURN_TO_IDLE || !enemy) {
 		nemesisClientId = -1;
 		if (!enemy) {
-			maybeHelpSomeone();
+			maybeHelpSomeoneOrElseIdle();
 		} else {
 			idle();
 		}
-		return;
-	} else if (state == HELPING) {
-		// we were helping but found a new enemy, remove help strategy
-		delete helpStrategy;
-		helpStrategy = 0;
-	}
-
-	if (state == ATTACK_STRATEGY) {
+	} else if (state == ATTACK_STRATEGY) {
 		if (attackStrategy->isDone()) {
 			delete attackStrategy;
 			attackStrategy = 0;
@@ -91,9 +84,7 @@ void Step5_OpenTheGateStrategy::execute() {
 			attackStrategy->execute();
 		}
 		return;
-	}
-
-	if (enemyOnGateToggle) {
+	} else if (enemyOnGateToggle) {
 		BotUtil::resetInput(getControls());
 		if (BotUtil::atXPosition(player->m_Pos.x, TraditionalAttack::ATTACK_POS.x, TARGET_POS_TOLERANCE) && player->IsGrounded()) {
 			state = ATTACK_STRATEGY;
@@ -111,11 +102,9 @@ void Step5_OpenTheGateStrategy::execute() {
 	}
 }
 
-void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
-	if (helpStrategy != 0) {
+void Step5_OpenTheGateStrategy::maybeHelpSomeoneOrElseIdle() {
+	if (state == HELPING) {
 		if (helpStrategy->isDone()) {
-			delete helpStrategy;
-			helpStrategy = 0;
 			BotUtil::resetInput(getControls());
 			state = RETURN_TO_IDLE;
 		} else {
@@ -133,13 +122,11 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 		CCharacterCore* otherPlayer = &client->m_aClients[i].m_Predicted;
 		if (DragOutFromLowerLeft::applicable(&otherPlayer->m_Pos)) {
 			//Frozen in lower left
-			helpStrategy = new DragOutFromLowerLeft(getControls(), player, otherPlayer);
-			state = HELPING;
+			enterHelpState(new DragOutFromLowerLeft(getControls(), player, otherPlayer));
 			return;
 		} else if (PushOutFromUpperRight::applicable(&otherPlayer->m_Pos)) {
 			//Frozen in upper right
-			helpStrategy = new PushOutFromUpperRight(getControls(), player, otherPlayer);
-			state = HELPING;
+			enterHelpState(new PushOutFromUpperRight(getControls(), player, otherPlayer));
 			return;
 		} else if (Blmapv3StageResolver::insideChamber(&otherPlayer->m_Pos)) {
 			bool frozen = otherPlayer->m_Input.m_WantedWeapon == WEAPON_NINJA;
@@ -153,6 +140,15 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 	}
 
 	idle(); // Idle if no one to help
+}
+
+void Step5_OpenTheGateStrategy::enterHelpState(BotSubStrategy* newHelpStrategy) {
+	if (helpStrategy != 0) {
+		delete helpStrategy;
+		helpStrategy = 0;
+	}
+	helpStrategy = newHelpStrategy;
+	state = HELPING;
 }
 
 void Step5_OpenTheGateStrategy::idle() {

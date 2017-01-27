@@ -6,7 +6,7 @@ Step1_MoveRightUnlessGateOpenStrategy::Step1_MoveRightUnlessGateOpenStrategy(CGa
 BotStrategy(client) {
 }
 
-const int Step1_MoveRightUnlessGateOpenStrategy::X_POS_TO_JUMP[] = {2200, 2400, 2725, 3050};
+const int Step1_MoveRightUnlessGateOpenStrategy::X_POS_TO_JUMP[] = {2000, 2400, 2725, 3050};
 
 void Step1_MoveRightUnlessGateOpenStrategy::execute() {
 	CCharacterCore* player = &client->m_PredictedChar;
