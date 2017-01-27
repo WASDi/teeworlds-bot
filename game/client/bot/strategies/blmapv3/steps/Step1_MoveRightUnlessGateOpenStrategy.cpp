@@ -6,12 +6,12 @@ Step1_MoveRightUnlessGateOpenStrategy::Step1_MoveRightUnlessGateOpenStrategy(CGa
 BotStrategy(client) {
 }
 
-const int Step1_MoveRightUnlessGateOpenStrategy::X_POS_TO_JUMP[] = {2400, 2725, 3050};
+const int Step1_MoveRightUnlessGateOpenStrategy::X_POS_TO_JUMP[] = {2200, 2400, 2725, 3050};
 
 void Step1_MoveRightUnlessGateOpenStrategy::execute() {
 	CCharacterCore* player = &client->m_PredictedChar;
-	
-	bool tooLateToMoveBack = player->m_Pos.x > X_POS_TO_JUMP[0];
+
+	bool tooLateToMoveBack = player->m_Pos.x > 1900;
 	//TODO if player blocking the gate is reachable from bellow and not hooking, grab him away
 	if (!tooLateToMoveBack && Blmapv3Util::isGateOpen(client)) {
 		float absDelta = fabs(GATE_X_POS - player->m_Pos.x);

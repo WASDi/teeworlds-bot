@@ -6,7 +6,7 @@ Step3_MoveThroughUpperAreaStrategy::Step3_MoveThroughUpperAreaStrategy(CGameClie
 BotStrategy(client) {
 }
 
-const int Step3_MoveThroughUpperAreaStrategy::X_POS_TO_JUMP[] = {3170, 2800, 2550};
+const int Step3_MoveThroughUpperAreaStrategy::X_POS_TO_JUMP[] = {3180, 2800, 2550};
 
 void Step3_MoveThroughUpperAreaStrategy::execute() {
 	BotUtil::move(getControls(), MOVE_LEFT);

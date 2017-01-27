@@ -2,25 +2,30 @@
 
 int Blmapv3StageResolver::resolveStage(vec2* pos) {
 	//TODO code that looks better using bounding boxes
-	if (pos->x < 1390) {
+	int x = pos->x;
+	int y = pos->y;
+
+	if (x < 1390) {
 		// spawn area
 		return 1;
-	} else if (pos->y > 1006 && pos->x < 3400) {
+	} else if (y > 1006 && x < 3400) {
 		// lower area heading towards middle fighting area
-		// TODO also return if on the middle platform
 		return 1;
-	} else if (pos->y > 555 && pos->x >= 3400) {
+	} else if (x > 2417 && x < 3118 && y > 580) {
+		// upper middle path
+		return 1;
+	} else if (x > 1518 && x <= 2417 && y > 580 && !aboveLine(pos, &LOWER_STAIRS_COORDINATES)) {
+		// under stairs
+		return 1;
+	} else if (y > 555 && x >= 3400) {
 		// in battle area
 		return 2;
-	}
-	if (pos->y < 530 && pos->x > 2385 && pos->x < 3800) {
+	} else if (y < 530 && x > 2385 && x < 3800) {
 		// upper area heading left to behind the gate
 		return 3;
-	}
-	if (insideChamber(pos)) {
+	} else if (insideChamber(pos)) {
 		return 5;
-	}
-	if (pos->x > 1380 && pos->x <= 2385 && pos->y < 1000) {
+	} else if (x > 1380 && x <= 2385 && y < 1000) {
 		// within bounding box for area behind gate (stage 4 or 5)
 		bool behindGateArea = aboveLine(pos, &LOWER_STAIRS_COORDINATES);
 		if (behindGateArea) {

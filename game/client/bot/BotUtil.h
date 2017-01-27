@@ -20,7 +20,7 @@ public:
 
 private:
 
-	const static int X_POS_JUMP_MARGIN = 32;
+	const static int X_POS_JUMP_MARGIN = 16;
 
 };
 
