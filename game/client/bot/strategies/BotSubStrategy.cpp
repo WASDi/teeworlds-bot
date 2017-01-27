@@ -1,16 +1,16 @@
-#include "Step5HelpStrategy.h"
+#include "BotSubStrategy.h"
 
-Step5HelpStrategy::Step5HelpStrategy(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
+BotSubStrategy::BotSubStrategy(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
 done(false),
 controls(controls),
 player(player),
 other(other) {
 }
 
-Step5HelpStrategy::~Step5HelpStrategy() {
+BotSubStrategy::~BotSubStrategy() {
 }
 
-void Step5HelpStrategy::execute() {
+void BotSubStrategy::execute() {
 	if (isDone()) {
 		return;
 	} else if (/* other left game TODO*/0) {
@@ -26,6 +26,6 @@ void Step5HelpStrategy::execute() {
 	executeInternal();
 }
 
-bool Step5HelpStrategy::isDone() {
+bool BotSubStrategy::isDone() {
 	return done;
 }

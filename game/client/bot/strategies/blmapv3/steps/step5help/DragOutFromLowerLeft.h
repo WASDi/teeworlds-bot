@@ -1,9 +1,9 @@
 #ifndef DRAGOUTFROMLOWERLEFT_H
 #define DRAGOUTFROMLOWERLEFT_H
 
-#include "Step5HelpStrategy.h"
+#include "../../../BotSubStrategy.h"
 
-class DragOutFromLowerLeft : public Step5HelpStrategy {
+class DragOutFromLowerLeft : public BotSubStrategy {
 public:
 
 	DragOutFromLowerLeft(CControls* controls, CCharacterCore* player, CCharacterCore* other);

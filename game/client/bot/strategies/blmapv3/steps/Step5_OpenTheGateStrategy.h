@@ -2,7 +2,7 @@
 #define STEP5_OPENTHEGATESTRATEGY_H
 
 #include "../../BotStrategy.h"
-#include "step5help/Step5HelpStrategy.h"
+#include "../../BotSubStrategy.h"
 
 class Step5_OpenTheGateStrategy : public BotStrategy {
 public:
@@ -33,15 +33,20 @@ private:
 	void maybeAvoidDying();
 	void toggleAvoidDying();
 	
-	Step5HelpStrategy* helpStrategy;
+	BotSubStrategy* helpStrategy;
+	//BotSubStrategy* attackStrategy;
 
 };
 
 enum {
 	IDLE,
+	
 	INIT_ATTACK,
 	WAIT_FOR_SECOND_JUMP,
 	HAMMER_READY,
+	
+	//ATTACK_STRATEGY,
+	
 	RETURN_TO_IDLE,
 	AVOID_DYING,
 	HELPING

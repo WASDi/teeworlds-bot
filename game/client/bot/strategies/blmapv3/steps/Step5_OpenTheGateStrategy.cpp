@@ -104,11 +104,10 @@ void Step5_OpenTheGateStrategy::execute() {
 			state = RETURN_TO_IDLE; // hope that enemy went away
 		}
 	} else if (enemyOnGateToggle) {
+		BotUtil::resetInput(getControls());
 		if (BotUtil::atXPosition(player->m_Pos.x, ATTACK_POS.x, TARGET_POS_TOLERANCE) && player->IsGrounded()) {
 			state = INIT_ATTACK;
-			BotUtil::resetInput(getControls());
 		} else {
-			BotUtil::resetInput(getControls());
 			BotUtil::moveTowardsWithJump(getControls(), player, &ATTACK_POS, true);
 			maybeAvoidDying();
 		}

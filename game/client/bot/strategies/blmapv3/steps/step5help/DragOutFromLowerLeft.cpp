@@ -3,7 +3,7 @@
 #include "../../../../BotUtil.h"
 
 DragOutFromLowerLeft::DragOutFromLowerLeft(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
-Step5HelpStrategy(controls, player, other),
+BotSubStrategy(controls, player, other),
 state(PRE_INIT) {
 }
 
