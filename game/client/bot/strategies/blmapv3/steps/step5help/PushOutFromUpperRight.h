@@ -6,7 +6,7 @@
 class PushOutFromUpperRight : public BotSubStrategy {
 public:
 
-	PushOutFromUpperRight(CControls* controls, CCharacterCore* player, CCharacterCore* other);
+	PushOutFromUpperRight(CControls* controls, CCharacterCore* me, CCharacterCore* otherPlayer);
 
 	static bool applicable(vec2* pos);
 

@@ -3,7 +3,7 @@
 #include "../../../../BotUtil.h"
 
 DragOutFromLowerLeft::DragOutFromLowerLeft(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
-BotSubStrategy(controls, player, other),
+BotSubStrategy(controls, me, otherPlayer),
 state(PRE_INIT) {
 }
 
@@ -15,34 +15,34 @@ const vec2 DragOutFromLowerLeft::PRE_START_POS = vec2(1553, 657);
 const vec2 DragOutFromLowerLeft::START_POS = vec2(1500, 657);
 
 void DragOutFromLowerLeft::executeInternal() {
-	bool releaseEarly = other->m_Pos.x < LEFT_BOUNDARY + 20 && other->m_Pos.y < Y_MIN + 20;
-	if (releaseEarly || other->m_Pos.y < Y_MIN || other->m_Pos.x > RIGHT_BOUNDARY) {
+	bool releaseEarly = otherPlayer->m_Pos.x < LEFT_BOUNDARY + 20 && otherPlayer->m_Pos.y < Y_MIN + 20;
+	if (releaseEarly || otherPlayer->m_Pos.y < Y_MIN || otherPlayer->m_Pos.x > RIGHT_BOUNDARY) {
 		controls->m_InputData.m_Hook = 0;
 		done = true;
 	}
 
-	if (state <= JUMPED && !applicable(&other->m_Pos)) {
+	if (state <= JUMPED && !applicable(&otherPlayer->m_Pos)) {
 		// other player respawned or was moved away
 		done = true;
 		return;
 	}
 
 	if (state == PRE_INIT) {
-		if (player->m_Pos == PRE_START_POS) {
+		if (me->m_Pos == PRE_START_POS) {
 			state = MOVE_TO_START_POS;
 		} else {
-			BotUtil::moveTowardsWithJump(controls, player, &PRE_START_POS, false);
+			BotUtil::moveTowardsWithJump(controls, me, &PRE_START_POS, false);
 		}
 	} else if (state == MOVE_TO_START_POS) {
-		if (player->m_Pos.y == START_POS.y && fabs(player->m_Pos.x - START_POS.x) < 5) {
+		if (me->m_Pos.y == START_POS.y && fabs(me->m_Pos.x - START_POS.x) < 5) {
 			BotUtil::move(controls, DONT_MOVE);
-			if (fabs(player->m_Vel.x) < 0.01 && fabs(player->m_Vel.y) < 0.01) {
+			if (fabs(me->m_Vel.x) < 0.01 && fabs(me->m_Vel.y) < 0.01) {
 				// stationary at start pos
 				controls->m_InputData.m_Jump = 1;
 				state = JUMPED;
 			}
 		} else {
-			BotUtil::moveTowardsWithJump(controls, player, &START_POS, true);
+			BotUtil::moveTowardsWithJump(controls, me, &START_POS, true);
 		}
 	} else if (state == JUMPED) {
 		controls->m_InputData.m_Jump = 0;
@@ -50,12 +50,12 @@ void DragOutFromLowerLeft::executeInternal() {
 		//realistic-looking aim
 		controls->m_MousePos.x = -10;
 		controls->m_MousePos.y = 20;
-		if (player->m_Vel.y > 0) {
-			if (other->m_Pos.x > DANGEROUS_THRESHOLD) {
+		if (me->m_Vel.y > 0) {
+			if (otherPlayer->m_Pos.x > DANGEROUS_THRESHOLD) {
 				state = DANGEROUS_FALLING;
 			} else {
-				controls->m_MousePos.x = other->m_Pos.x - player->m_Pos.x - 20;
-				controls->m_MousePos.y = other->m_Pos.y - player->m_Pos.y;
+				controls->m_MousePos.x = otherPlayer->m_Pos.x - me->m_Pos.x - 20;
+				controls->m_MousePos.y = otherPlayer->m_Pos.y - me->m_Pos.y;
 				controls->m_InputData.m_Hook = 1;
 				state = FALLING_HOOKING;
 			}
@@ -64,10 +64,10 @@ void DragOutFromLowerLeft::executeInternal() {
 		// Hook fired last last state, player should be grabbed
 		BotUtil::move(controls, MOVE_RIGHT);
 	} else if (state == DANGEROUS_FALLING) {
-		if (player->m_Pos.y > 650) {
+		if (me->m_Pos.y > 650) {
 			BotUtil::move(controls, MOVE_RIGHT);
-			controls->m_MousePos.x = other->m_Pos.x - player->m_Pos.x - 20;
-			controls->m_MousePos.y = other->m_Pos.y - player->m_Pos.y;
+			controls->m_MousePos.x = otherPlayer->m_Pos.x - me->m_Pos.x - 20;
+			controls->m_MousePos.y = otherPlayer->m_Pos.y - me->m_Pos.y;
 			controls->m_InputData.m_Hook = 1;
 			controls->m_InputData.m_Jump = 1;
 			state = FALLING_HOOKING;

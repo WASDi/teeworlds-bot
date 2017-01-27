@@ -1,10 +1,10 @@
 #include "BotSubStrategy.h"
 
-BotSubStrategy::BotSubStrategy(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
+BotSubStrategy::BotSubStrategy(CControls* controls, CCharacterCore* me, CCharacterCore* otherPlayer) :
 done(false),
 controls(controls),
-player(player),
-other(other) {
+me(me),
+otherPlayer(otherPlayer) {
 }
 
 BotSubStrategy::~BotSubStrategy() {
@@ -17,7 +17,7 @@ void BotSubStrategy::execute() {
 		done = true;
 		return;
 	}
-	else if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
+	else if (me->m_HookState == HOOK_GRABBED && me->m_HookedPlayer == -1) {
 		// grabbed wall, not supposed to happen when helping
 		controls->m_InputData.m_Hook = 0;
 		done = true;

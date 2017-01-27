@@ -7,7 +7,7 @@
 class BotSubStrategy {
 public:
 
-	BotSubStrategy(CControls* controls, CCharacterCore* player, CCharacterCore* other);
+	BotSubStrategy(CControls* controls, CCharacterCore* me, CCharacterCore* otherPlayer);
 	virtual ~BotSubStrategy();
 
 	void execute();
@@ -19,8 +19,8 @@ protected:
 	bool done;
 
 	CControls* controls;
-	CCharacterCore* player;
-	CCharacterCore* other;
+	CCharacterCore* me;
+	CCharacterCore* otherPlayer;
 
 	virtual void executeInternal() = 0;
 

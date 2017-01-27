@@ -2,8 +2,8 @@
 
 #include "../../../../BotUtil.h"
 
-PushOutFromUpperRight::PushOutFromUpperRight(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
-BotSubStrategy(controls, player, other) {
+PushOutFromUpperRight::PushOutFromUpperRight(CControls* controls, CCharacterCore* me, CCharacterCore* otherPlayer) :
+BotSubStrategy(controls, me, otherPlayer) {
 }
 
 bool PushOutFromUpperRight::applicable(vec2* pos) {
@@ -14,21 +14,21 @@ const vec2 PushOutFromUpperRight::TARGET = vec2(1809, 529);
 const vec2 PushOutFromUpperRight::PRE_TARGET = vec2(TARGET.x - 48, TARGET.y);
 
 void PushOutFromUpperRight::executeInternal() {
-	if (!applicable(&other->m_Pos)) {
+	if (!applicable(&otherPlayer->m_Pos)) {
 		done = true;
 		return;
 	}
-	if (player->m_Pos.x == TARGET.x) {
-		if (player->m_Pos.y == TARGET.y) {
+	if (me->m_Pos.x == TARGET.x) {
+		if (me->m_Pos.y == TARGET.y) {
 			controls->m_MousePos.x = 200;
 			controls->m_MousePos.y = -100;
-			if (distance(player->m_Pos, other->m_Pos) < 60) {
+			if (distance(me->m_Pos, otherPlayer->m_Pos) < 60) {
 				controls->m_InputData.m_Hook = 0;
 				controls->m_InputData.m_Jump = 1;
 			} else {
-				controls->m_InputData.m_Hook = player->m_HookState != HOOK_RETRACTED;
+				controls->m_InputData.m_Hook = me->m_HookState != HOOK_RETRACTED;
 			}
-		} else if (player->m_Pos.y < TARGET.y - 32) {
+		} else if (me->m_Pos.y < TARGET.y - 32) {
 			//has jumped high enough, attack!
 			controls->m_MousePos.x = 100;
 			controls->m_MousePos.y = 0;
@@ -44,10 +44,10 @@ void PushOutFromUpperRight::executeInternal() {
 		controls->m_InputData.m_Hook = 0;
 		controls->m_InputData.m_Fire = 0;
 		// Move to "pre target" with jump, then walk safely
-		if (player->m_Pos.x < PRE_TARGET.x || player->m_Pos.y < TARGET.y) {
-			BotUtil::moveTowardsWithJump(controls, player, &PRE_TARGET, true);
+		if (me->m_Pos.x < PRE_TARGET.x || me->m_Pos.y < TARGET.y) {
+			BotUtil::moveTowardsWithJump(controls, me, &PRE_TARGET, true);
 		} else {
-			BotUtil::moveTowards(controls, player->m_Pos.x, TARGET.x);
+			BotUtil::moveTowards(controls, me->m_Pos.x, TARGET.x);
 		}
 	}
 }

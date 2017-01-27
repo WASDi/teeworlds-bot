@@ -6,7 +6,7 @@
 class DragOutFromLowerLeft : public BotSubStrategy {
 public:
 
-	DragOutFromLowerLeft(CControls* controls, CCharacterCore* player, CCharacterCore* other);
+	DragOutFromLowerLeft(CControls* controls, CCharacterCore* me, CCharacterCore* otherPlayer);
 
 	static bool applicable(vec2* pos);
 
