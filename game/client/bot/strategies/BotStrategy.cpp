@@ -1,4 +1,5 @@
 #include "BotStrategy.h"
+#include "game/client/bot/BotUtil.h"
 
 BotStrategy::BotStrategy(CGameClient* client) : client(client) {
 }
@@ -8,7 +9,7 @@ bool BotStrategy::isFrozen() {
 }
 
 long BotStrategy::getNowMillis() {
-	return time_get() / 1000;
+	return BotUtil::getNowMillis();
 }
 
 CControls* BotStrategy::getControls() {

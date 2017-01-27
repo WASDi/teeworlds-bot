@@ -17,6 +17,8 @@ public:
 	static bool shouldJump(vec2* pos, const int* posXJumps, const int arrLength);
 	
 	static bool atXPosition(int posX, int targetX, int tolerance);
+	
+	static long getNowMillis();
 
 private:
 

@@ -34,7 +34,7 @@ private:
 	void toggleAvoidDying();
 	
 	BotSubStrategy* helpStrategy;
-	//BotSubStrategy* attackStrategy;
+	BotSubStrategy* attackStrategy;
 
 };
 
@@ -45,7 +45,7 @@ enum {
 	WAIT_FOR_SECOND_JUMP,
 	HAMMER_READY,
 	
-	//ATTACK_STRATEGY,
+	ATTACK_STRATEGY,
 	
 	RETURN_TO_IDLE,
 	AVOID_DYING,

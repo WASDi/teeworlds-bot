@@ -5,6 +5,8 @@
 #include "step5help/PushOutFromUpperRight.h"
 #include "step5help/DragOutFromLowerLeft.h"
 
+#include "step5attack/AttackFromAbove.h"
+
 Step5_OpenTheGateStrategy::Step5_OpenTheGateStrategy(CGameClient* client) :
 BotStrategy(client),
 nemesisClientId(-1),
@@ -79,6 +81,18 @@ void Step5_OpenTheGateStrategy::execute() {
 		helpStrategy = 0;
 	}
 
+	if (state == ATTACK_STRATEGY) {
+		if (attackStrategy->isDone()) {
+			delete attackStrategy;
+			attackStrategy = 0;
+			BotUtil::resetInput(getControls());
+			state = RETURN_TO_IDLE;
+		} else {
+			attackStrategy->execute();
+		}
+		return;
+	}
+
 	if (state == INIT_ATTACK) {
 		getControls()->m_MousePos.x = enemy->m_Pos.x - player->m_Pos.x;
 		getControls()->m_MousePos.y = enemy->m_Pos.y - player->m_Pos.y - 10; // a little above to don't hook ground
@@ -106,7 +120,12 @@ void Step5_OpenTheGateStrategy::execute() {
 	} else if (enemyOnGateToggle) {
 		BotUtil::resetInput(getControls());
 		if (BotUtil::atXPosition(player->m_Pos.x, ATTACK_POS.x, TARGET_POS_TOLERANCE) && player->IsGrounded()) {
-			state = INIT_ATTACK;
+			if (rand() % 2 == 0) {
+				state = ATTACK_STRATEGY;
+				attackStrategy = new AttackFromAbove(getControls(), player, enemy);
+			} else {
+				state = INIT_ATTACK;
+			}
 		} else {
 			BotUtil::moveTowardsWithJump(getControls(), player, &ATTACK_POS, true);
 			maybeAvoidDying();
@@ -125,7 +144,6 @@ void Step5_OpenTheGateStrategy::maybeHelpSomeone() {
 			state = RETURN_TO_IDLE;
 		} else {
 			helpStrategy->execute();
-			state = HELPING;
 		}
 		return;
 	}

@@ -2,7 +2,7 @@
 
 #include "../../../../BotUtil.h"
 
-DragOutFromLowerLeft::DragOutFromLowerLeft(CControls* controls, CCharacterCore* player, CCharacterCore* other) :
+DragOutFromLowerLeft::DragOutFromLowerLeft(CControls* controls, CCharacterCore* me, CCharacterCore* otherPlayer) :
 BotSubStrategy(controls, me, otherPlayer),
 state(PRE_INIT) {
 }
@@ -15,6 +15,13 @@ const vec2 DragOutFromLowerLeft::PRE_START_POS = vec2(1553, 657);
 const vec2 DragOutFromLowerLeft::START_POS = vec2(1500, 657);
 
 void DragOutFromLowerLeft::executeInternal() {
+	if (me->m_HookState == HOOK_GRABBED && me->m_HookedPlayer == -1) {
+		// grabbed wall, not supposed to happen when helping
+		controls->m_InputData.m_Hook = 0;
+		done = true;
+		return;
+	}
+
 	bool releaseEarly = otherPlayer->m_Pos.x < LEFT_BOUNDARY + 20 && otherPlayer->m_Pos.y < Y_MIN + 20;
 	if (releaseEarly || otherPlayer->m_Pos.y < Y_MIN || otherPlayer->m_Pos.x > RIGHT_BOUNDARY) {
 		controls->m_InputData.m_Hook = 0;

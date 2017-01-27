@@ -57,3 +57,7 @@ bool BotUtil::shouldJump(vec2* pos, const int* posXJumps, const int arrLength) {
 bool BotUtil::atXPosition(int posX, int targetX, int tolerance) {
 	return abs(posX - targetX) < tolerance;
 }
+
+long BotUtil::getNowMillis() {
+	return time_get() / 1000;
+}

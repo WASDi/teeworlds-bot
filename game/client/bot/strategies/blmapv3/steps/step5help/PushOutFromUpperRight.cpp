@@ -14,6 +14,13 @@ const vec2 PushOutFromUpperRight::TARGET = vec2(1809, 529);
 const vec2 PushOutFromUpperRight::PRE_TARGET = vec2(TARGET.x - 48, TARGET.y);
 
 void PushOutFromUpperRight::executeInternal() {
+	if (me->m_HookState == HOOK_GRABBED && me->m_HookedPlayer == -1) {
+		// grabbed wall, not supposed to happen when helping
+		controls->m_InputData.m_Hook = 0;
+		done = true;
+		return;
+	}
+
 	if (!applicable(&otherPlayer->m_Pos)) {
 		done = true;
 		return;
