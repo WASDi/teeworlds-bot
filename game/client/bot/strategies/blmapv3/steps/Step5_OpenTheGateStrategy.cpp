@@ -6,6 +6,7 @@
 #include "step5help/DragOutFromLowerLeft.h"
 
 #include "step5attack/AttackFromAbove.h"
+#include "step5attack/TraditionalAttack.h"
 
 Step5_OpenTheGateStrategy::Step5_OpenTheGateStrategy(CGameClient* client) :
 BotStrategy(client),
@@ -17,7 +18,6 @@ helpStrategy(0) {
 
 const vec2 Step5_OpenTheGateStrategy::IDLE_POS1 = vec2(1520 + 8, 657);
 const vec2 Step5_OpenTheGateStrategy::IDLE_POS2 = vec2(1584, 625);
-const vec2 Step5_OpenTheGateStrategy::ATTACK_POS = vec2(1648, 593);
 const vec2 Step5_OpenTheGateStrategy::DANGEROUS_HOOKER_POS = vec2(1580, 450);
 
 #include <stdio.h>
@@ -93,41 +93,17 @@ void Step5_OpenTheGateStrategy::execute() {
 		return;
 	}
 
-	if (state == INIT_ATTACK) {
-		getControls()->m_MousePos.x = enemy->m_Pos.x - player->m_Pos.x;
-		getControls()->m_MousePos.y = enemy->m_Pos.y - player->m_Pos.y - 10; // a little above to don't hook ground
-		getControls()->m_InputData.m_Hook = 1;
-		getControls()->m_InputData.m_Jump = 1;
-		state = WAIT_FOR_SECOND_JUMP;
-	} else if (state == WAIT_FOR_SECOND_JUMP) {
-		if (player->m_HookState == HOOK_GRABBED && player->m_HookedPlayer == -1) {
-			state = RETURN_TO_IDLE;
-		}
-		BotUtil::moveTowards(getControls(), player->m_Pos.x, ATTACK_POS.x); // TODO another attack pos or something if occupied
-		getControls()->m_InputData.m_Jump = 0;
-		if (player->m_Vel.y > 0.5) {
-			getControls()->m_InputData.m_Jump = 1;
-			state = HAMMER_READY;
-		}
-	} else if (state == HAMMER_READY) {
-		BotUtil::moveTowards(getControls(), player->m_Pos.x, ATTACK_POS.x);
-		if (player->m_HookState != HOOK_GRABBED || player->IsGrounded()) {
-			state = RETURN_TO_IDLE; // fail, try again
-		} else if (distance(player->m_Pos, enemy->m_Pos) < 55) {
-			getControls()->m_InputData.m_Fire = 1;
-			state = RETURN_TO_IDLE; // hope that enemy went away
-		}
-	} else if (enemyOnGateToggle) {
+	if (enemyOnGateToggle) {
 		BotUtil::resetInput(getControls());
-		if (BotUtil::atXPosition(player->m_Pos.x, ATTACK_POS.x, TARGET_POS_TOLERANCE) && player->IsGrounded()) {
+		if (BotUtil::atXPosition(player->m_Pos.x, TraditionalAttack::ATTACK_POS.x, TARGET_POS_TOLERANCE) && player->IsGrounded()) {
+			state = ATTACK_STRATEGY;
 			if (rand() % 2 == 0) {
-				state = ATTACK_STRATEGY;
 				attackStrategy = new AttackFromAbove(getControls(), player, enemy);
 			} else {
-				state = INIT_ATTACK;
+				attackStrategy = new TraditionalAttack(getControls(), player, enemy);
 			}
 		} else {
-			BotUtil::moveTowardsWithJump(getControls(), player, &ATTACK_POS, true);
+			BotUtil::moveTowardsWithJump(getControls(), player, &TraditionalAttack::ATTACK_POS, true);
 			maybeAvoidDying();
 		}
 	} else {

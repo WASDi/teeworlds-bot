@@ -21,7 +21,6 @@ private:
 	const static vec2 DANGEROUS_HOOKER_POS;
 	const vec2* getDesiredIdlePos();
 
-	const static vec2 ATTACK_POS;
 	const static int TARGET_POS_TOLERANCE = 16;
 
 	void idle();
@@ -32,7 +31,7 @@ private:
 	long avoidDyingUntil;
 	void maybeAvoidDying();
 	void toggleAvoidDying();
-	
+
 	BotSubStrategy* helpStrategy;
 	BotSubStrategy* attackStrategy;
 
@@ -40,13 +39,9 @@ private:
 
 enum {
 	IDLE,
-	
-	INIT_ATTACK,
-	WAIT_FOR_SECOND_JUMP,
-	HAMMER_READY,
-	
+
 	ATTACK_STRATEGY,
-	
+
 	RETURN_TO_IDLE,
 	AVOID_DYING,
 	HELPING
