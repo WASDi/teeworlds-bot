@@ -6,8 +6,9 @@
 #include "strategies/blmapv3/Blmapv3StrategyWrapper.h"
 #include <stdio.h>
 
-WasdBot::WasdBot(CGameClient* client) :
+WasdBot::WasdBot(CGameClient* client, CEmoticon* emoticon) :
 client(client),
+emoticon(emoticon),
 jumpedLastStep(false),
 enabled(false),
 debug(false),
@@ -61,5 +62,6 @@ bool WasdBot::toggleEnabled() {
 }
 
 bool WasdBot::toggleDebug() {
+	emoticon->Emote(EMOTICON_SUSHI);
 	return debug = !debug;
 }

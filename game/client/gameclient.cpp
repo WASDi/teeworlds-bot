@@ -291,7 +291,7 @@ void CGameClient::OnInit()
 
 	m_ServerMode = SERVERMODE_PURE;
 	
-	wasdBot = new WasdBot(this);
+	wasdBot = new WasdBot(this, &gs_Emoticon);
 }
 
 void CGameClient::DispatchInput()
