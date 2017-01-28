@@ -26,6 +26,7 @@ private:
 	void idle();
 	void maybeHelpSomeoneOrElseIdle();
 	void enterHelpState(BotSubStrategy* newHelpStrategy);
+	void enterAttackState(BotSubStrategy* newAttackStrategy);
 
 	bool insideGateToggle(vec2* pos);
 

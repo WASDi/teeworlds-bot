@@ -8,7 +8,7 @@ state(INIT_WAIT),
 stateStartTime(0) {
 }
 
-const vec2 AttackFromAbove::HOOK_POS = vec2(1536 + 16, 416);
+const vec2 AttackFromAbove::HOOK_POS = vec2(1536 + 32, 416);
 
 void AttackFromAbove::executeInternal() {
 	if (stateStartTime == 0) {

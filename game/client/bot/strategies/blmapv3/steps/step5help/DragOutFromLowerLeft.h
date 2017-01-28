@@ -8,7 +8,7 @@ public:
 
 	DragOutFromLowerLeft(CControls* controls, CCharacterCore* me, CCharacterCore* otherPlayer);
 
-	static bool applicable(vec2* pos);
+	static bool applicable(vec2* pos); // TODO rightmost player is most applicable
 
 	void executeInternal();
 

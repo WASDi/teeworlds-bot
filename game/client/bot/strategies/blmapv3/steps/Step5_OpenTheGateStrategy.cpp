@@ -13,7 +13,8 @@ BotStrategy(client),
 nemesisClientId(-1),
 state(IDLE),
 avoidDyingUntil(0),
-helpStrategy(0) {
+helpStrategy(0),
+attackStrategy(0) {
 }
 
 const vec2 Step5_OpenTheGateStrategy::IDLE_POS1 = vec2(1520 + 8, 657);
@@ -76,22 +77,18 @@ void Step5_OpenTheGateStrategy::execute() {
 		}
 	} else if (state == ATTACK_STRATEGY) {
 		if (attackStrategy->isDone()) {
-			delete attackStrategy;
-			attackStrategy = 0;
 			BotUtil::resetInput(getControls());
 			state = RETURN_TO_IDLE;
 		} else {
 			attackStrategy->execute();
 		}
-		return;
 	} else if (enemyOnGateToggle) {
 		BotUtil::resetInput(getControls());
 		if (BotUtil::atXPosition(player->m_Pos.x, TraditionalAttack::ATTACK_POS.x, TARGET_POS_TOLERANCE) && player->IsGrounded()) {
-			state = ATTACK_STRATEGY;
 			if (rand() % 2 == 0) {
-				attackStrategy = new AttackFromAbove(getControls(), player, enemy);
+				enterAttackState(new AttackFromAbove(getControls(), player, enemy));
 			} else {
-				attackStrategy = new TraditionalAttack(getControls(), player, enemy);
+				enterAttackState(new TraditionalAttack(getControls(), player, enemy));
 			}
 		} else {
 			BotUtil::moveTowardsWithJump(getControls(), player, &TraditionalAttack::ATTACK_POS, true);
@@ -147,8 +144,19 @@ void Step5_OpenTheGateStrategy::enterHelpState(BotSubStrategy* newHelpStrategy) 
 		delete helpStrategy;
 		helpStrategy = 0;
 	}
+	BotUtil::resetInput(getControls());
 	helpStrategy = newHelpStrategy;
 	state = HELPING;
+}
+
+void Step5_OpenTheGateStrategy::enterAttackState(BotSubStrategy* newAttackStrategy) {
+	if (attackStrategy != 0) {
+		delete attackStrategy;
+		attackStrategy = 0;
+	}
+	BotUtil::resetInput(getControls());
+	attackStrategy = newAttackStrategy;
+	state = ATTACK_STRATEGY;
 }
 
 void Step5_OpenTheGateStrategy::idle() {
