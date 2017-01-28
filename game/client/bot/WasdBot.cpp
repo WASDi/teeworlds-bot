@@ -4,6 +4,7 @@
 #include "strategies/common/HammerNearbyPlayerStrategy.h"
 #include "BotUtil.h"
 #include "strategies/blmapv3/Blmapv3StrategyWrapper.h"
+#include "engine/client/headless/HeadlessMainSwitch.h"
 #include <stdio.h>
 
 WasdBot::WasdBot(CGameClient* client, CEmoticon* emoticon) :
@@ -23,6 +24,11 @@ resetControlsNextFrame(false) {
 	botStrategies.push_back(new Blmapv3StrategyWrapper(client));
 	botStrategies.push_back(new JumpWhenStuckMovingStrategy(client));
 	botStrategies.push_back(new HammerNearbyPlayerStrategy(client));
+	
+	if(HeadlessMainSwitch::enabled) {
+		// auto-enabled when headless
+		enabled = true;
+	}
 }
 
 void WasdBot::injectInput() {

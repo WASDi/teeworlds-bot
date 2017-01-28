@@ -51,6 +51,10 @@
 #endif
 
 #include "SDL.h"
+
+#include "headless/HeadlessMainSwitch.h"
+#include "headless/NullGraphics.h"
+
 #ifdef main
 #undef main
 #endif
@@ -1723,6 +1727,7 @@ void CClient::Run()
 	m_SnapshotParts = 0;
 
 	// init SDL
+	if(!HeadlessMainSwitch::enabled)
 	{
 		if(SDL_Init(0) < 0)
 		{
@@ -1735,7 +1740,9 @@ void CClient::Run()
 
 	// init graphics
 	{
-		if(g_Config.m_GfxThreaded)
+		if(HeadlessMainSwitch::enabled)
+			m_pGraphics = new NullGraphics();
+		else if(g_Config.m_GfxThreaded)
 			m_pGraphics = CreateEngineGraphicsThreaded();
 		else
 			m_pGraphics = CreateEngineGraphics();
@@ -2369,8 +2376,14 @@ int main(int argc, const char **argv) // ignore_convention
 	pConsole->ExecuteFile("autoexec.cfg");
 
 	// parse the command line arguments
-	if(argc > 1) // ignore_convention
+	if(argc > 1) { // ignore_convention
 		pConsole->ParseArguments(argc-1, &argv[1]); // ignore_convention
+		
+		if(strcmp(argv[1], "HEADLESS") == 0) {
+			HeadlessMainSwitch::enabled = true;
+		}
+	}
+	dbg_msg("client", "*** Headless mode = %s", HeadlessMainSwitch::enabled ? "true" : "false");
 
 	// restore empty config strings to their defaults
 	pConfig->RestoreStrings();
